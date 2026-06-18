@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUT Demo</title>
+    <style>
+        * { margin:0; padding:0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 16px;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .image-card {
+            background: #161616;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .card-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #222;
+            gap: 12px;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #555;
+            cursor: default;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .card-header h2.enabled {
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .card-header h2.enabled:hover {
+            color: #d4943a;
+        }
+
+        .lut-name {
+            font-size: 12px;
+            color: #d4943a;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            font-size: 12px;
+            color: #555;
+            cursor: default;
+            padding: 4px 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: transparent;
+            transition: color 0.2s, border-color 0.2s, background 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .toggle-btn::before {
+            content: '◉';
+            font-size: 10px;
+        }
+
+        .toggle-btn.enabled {
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .toggle-btn.enabled:hover {
+            color: #fff;
+            border-color: #666;
+        }
+
+        .toggle-btn.active {
+            color: #d4943a;
+            border-color: #d4943a;
+            background: rgba(212,148,58,0.1);
+        }
+
+        .toggle-btn.active::before {
+            content: '◎';
+        }
+
+        .clear-btn {
+            font-size: 12px;
+            color: #555;
+            cursor: default;
+            padding: 4px 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .clear-btn.enabled {
+            color: #cc7777;
+            border-color: #553333;
+            cursor: pointer;
+        }
+
+        .clear-btn.enabled:hover {
+            color: #e05555;
+            border-color: #e05555;
+        }
+
+        .card-body {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            background: #0d0d0d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .card-body:hover {
+            background: #111;
+        }
+
+        .card-body.drag-over {
+            background: #1a1410;
+        }
+
+        .card-body canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .card-body canvas.visible {
+            display: block;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .upload-placeholder .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .upload-placeholder .main-text {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .upload-placeholder .hint {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .card-body.has-image .upload-placeholder {
+            display: none;
+        }
+
+        .card-body input[type="file"] { display: none; }
+
+        /* LUT selector panel */
+        .lut-panel-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lut-panel-overlay.visible {
+            display: flex;
+        }
+
+        .lut-panel {
+            background: #1a1a1a;
+            border-radius: 16px;
+            border: 1px solid #333;
+            width: 90vw;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .lut-panel-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #222;
+        }
+
+        .lut-panel-header h3 {
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .lut-panel-close {
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .lut-panel-close:hover {
+            color: #e05555;
+        }
+
+        .lut-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        .lut-category {
+            padding: 0 18px;
+            margin-bottom: 4px;
+        }
+
+        .lut-category-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            padding: 8px 0 6px;
+        }
+
+        .lut-item {
+            padding: 14px 18px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #aaa;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 48px;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .lut-item:hover {
+            background: #222;
+            color: #fff;
+        }
+
+        .lut-item.selected {
+            color: #d4943a;
+            background: rgba(212,148,58,0.08);
+        }
+
+        .lut-item .check {
+            color: #d4943a;
+            font-size: 14px;
+        }
+
+        .lut-item:not(.selected) .check {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="image-card">
+        <div class="card-header">
+            <div class="card-header-left">
+                <h2 id="styleBtn">选择风格</h2>
+                <span class="lut-name" id="lutName"></span>
+            </div>
+            <div class="card-header-right">
+                <span class="toggle-btn" id="originalBtn">原图</span>
+                <span class="clear-btn" id="clearBtn">清除</span>
+            </div>
+        </div>
+        <div class="card-body" id="cardBody">
+            <canvas id="canvasOut" class="visible"></canvas>
+            <div class="upload-placeholder" id="placeholder">
+                <div class="icon">📂</div>
+                <div class="main-text">点击此处选择本地图片</div>
+                <div class="hint">支持 JPG / PNG / WebP</div>
+            </div>
+            <input type="file" id="imageInput" accept="image/*">
+            <input type="file" id="lutInput" accept=".cube,text/plain" style="display:none">
+        </div>
+    </div>
+
+</div>
+
+<!-- LUT Selector Panel -->
+<div class="lut-panel-overlay" id="lutPanelOverlay">
+    <div class="lut-panel">
+        <div class="lut-panel-header">
+            <h3>选择 LUT 风格</h3>
+            <span class="lut-panel-close" id="lutPanelClose">✕</span>
+        </div>
+        <div class="lut-panel-body" id="lutPanelBody">
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---- LUT data loaded dynamically from GitHub ----
+    const LUT_BASE = 'https://raw.githubusercontent.com/shengnanxiang/lut-demo/main';
+    let LUT_LIBRARY = null;
+    let lutIndex = null;
+
+    async function loadLutIndex() {
+        // LUT index built from known files
+        lutIndex = {'live': ['10.fj-xianyan.cube', '12.TFTzi.cube', '4.ms-danju.cube', '5.ms-fugumeishi.cube', '9.jp-fugujiaopian.cube', '9.ms-fugumeishi.cube', 'fujiNC2.cube', 'fujiNN.cube'], 'new': ['20260125姜黄.cube', '7.Florida2.cube', 'fugu-nuanzon.cube', 'meishi-xinxian.cube', 'renxiang-fujiNC2.cube', 'yejing-qinglansediao.cube', 'yejing11.CUBE', '双lut叠加-人像.cube', '复古棕.cube', '奥林巴斯U2.cube', '深蓝色风格.cube', '滋味.cube']};
+    }
+
+    async function fetchLutFile(path) {
+        const url = LUT_BASE + '/' + path;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('Failed to load: ' + path);
+        return await resp.text();
+    }
+
+    async function loadLutContent(category, filename) {
+        const path = category + '/' + filename;
+        const text = await fetchLutFile(path);
+        return text;
+    }
+
+    // Initialize
+    loadLutIndex();
+
+    const cardBody      = document.getElementById('cardBody');
+    const styleBtn      = document.getElementById('styleBtn');
+    const lutNameEl     = document.getElementById('lutName');
+    const originalBtn   = document.getElementById('originalBtn');
+    const clearBtn      = document.getElementById('clearBtn');
+    const canvasOut     = document.getElementById('canvasOut');
+    const placeholder   = document.getElementById('placeholder');
+    const imageInput    = document.getElementById('imageInput');
+    const lutInput      = document.getElementById('lutInput');
+    const lutPanelOverlay = document.getElementById('lutPanelOverlay');
+    const lutPanelBody  = document.getElementById('lutPanelBody');
+    const lutPanelClose = document.getElementById('lutPanelClose');
+    const ctx           = canvasOut.getContext('2d', { willReadFrequently: true });
+
+    let sourceImage = null;
+    let lutData = null;
+    let showingOriginal = false;
+    let hasImage = false;
+    let selectedLutKey = null;
+
+    // ---- Parse .cube file ----
+    function parseCubeFile(text) {
+        const lines = text.split('\n').map(l => l.trim());
+        let size = 0;
+        const values = [];
+
+        for (const line of lines) {
+            if (!line || line.startsWith('#') || line.startsWith('//')) continue;
+            const parts = line.split(/\s+/);
+            if (parts[0] === 'TITLE') continue;
+            if (parts[0] === 'DOMAIN_MIN' || parts[0] === 'DOMAIN_MAX') continue;
+            if (parts[0] === 'LUT_3D_SIZE') {
+                size = parseInt(parts[1]);
+                continue;
+            }
+            if (parts.length >= 3) {
+                const r = parseFloat(parts[0]);
+                const g = parseFloat(parts[1]);
+                const b = parseFloat(parts[2]);
+                if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                    values.push(r, g, b);
+                }
+            }
+        }
+
+        if (!size || values.length !== size * size * size * 3) {
+            throw new Error('Invalid .cube file (size=' + size + ', values=' + values.length + ')');
+        }
+        return { size, table: new Float32Array(values) };
+    }
+
+    // ---- Apply 3D LUT ----
+    function applyLUT(image, lut) {
+        const { size, table } = lut;
+        const w = image.naturalWidth || image.width;
+        const h = image.naturalHeight || image.height;
+
+        canvasOut.width = w;
+        canvasOut.height = h;
+
+        ctx.drawImage(image, 0, 0, w, h);
+        const srcData = ctx.getImageData(0, 0, w, h);
+        const src = srcData.data;
+
+        const outData = ctx.createImageData(w, h);
+        const dst = outData.data;
+
+        const maxIdx = size - 1;
+        const n = size * size;
+
+        for (let i = 0; i < src.length; i += 4) {
+            const r = src[i]     / 255;
+            const g = src[i + 1] / 255;
+            const b = src[i + 2] / 255;
+            const a = src[i + 3];
+
+            const rf = Math.min(r * maxIdx, maxIdx);
+            const gf = Math.min(g * maxIdx, maxIdx);
+            const bf = Math.min(b * maxIdx, maxIdx);
+
+            const r0 = Math.floor(rf);
+            const g0 = Math.floor(gf);
+            const b0 = Math.floor(bf);
+            const r1 = Math.min(r0 + 1, maxIdx);
+            const g1 = Math.min(g0 + 1, maxIdx);
+            const b1 = Math.min(b0 + 1, maxIdx);
+
+            const dr = rf - r0;
+            const dg = gf - g0;
+            const db = bf - b0;
+
+            const idx000 = (b0 * n + g0 * size + r0) * 3;
+            const idx100 = (b0 * n + g0 * size + r1) * 3;
+            const idx010 = (b0 * n + g1 * size + r0) * 3;
+            const idx110 = (b0 * n + g1 * size + r1) * 3;
+            const idx001 = (b1 * n + g0 * size + r0) * 3;
+            const idx101 = (b1 * n + g0 * size + r1) * 3;
+            const idx011 = (b1 * n + g1 * size + r0) * 3;
+            const idx111 = (b1 * n + g1 * size + r1) * 3;
+
+            for (let c = 0; c < 3; c++) {
+                const c00 = table[idx000 + c] * (1 - dr) + table[idx100 + c] * dr;
+                const c01 = table[idx001 + c] * (1 - dr) + table[idx101 + c] * dr;
+                const c10 = table[idx010 + c] * (1 - dr) + table[idx110 + c] * dr;
+                const c11 = table[idx011 + c] * (1 - dr) + table[idx111 + c] * dr;
+                const c0  = c00 * (1 - dg) + c10 * dg;
+                const c1  = c01 * (1 - dg) + c11 * dg;
+                const val = c0 * (1 - db) + c1 * db;
+                dst[i + c] = Math.round(Math.max(0, Math.min(1, val)) * 255);
+            }
+            dst[i + 3] = a;
+        }
+
+        ctx.putImageData(outData, 0, 0);
+    }
+
+    function render() {
+        if (!sourceImage) return;
+        if (!lutData || showingOriginal) {
+            canvasOut.width = sourceImage.naturalWidth || sourceImage.width;
+            canvasOut.height = sourceImage.naturalHeight || sourceImage.height;
+            ctx.drawImage(sourceImage, 0, 0);
+        } else {
+            applyLUT(sourceImage, lutData);
+        }
+    }
+
+    // ---- LUT Panel ----
+    function buildLutPanel() {
+        lutPanelBody.innerHTML = '';
+        if (!lutIndex) {
+            lutPanelBody.innerHTML = '<div class="lut-item" style="justify-content:center;color:#666;">加载 LUT 列表中...</div>';
+            return;
+        }
+        const categories = [
+            { key: 'live', label: 'Live' },
+            { key: 'new', label: 'New' }
+        ];
+
+        for (const cat of categories) {
+            const catDiv = document.createElement('div');
+            catDiv.className = 'lut-category';
+            catDiv.innerHTML = '<div class="lut-category-title">' + cat.label + '</div>';
+            
+            const files = lutIndex[cat.key] || [];
+            for (const fname of files) {
+                const display = fname.replace(/\.(cube|CUBE)$/, '');
+                const item = document.createElement('div');
+                item.className = 'lut-item';
+                if (selectedLutKey === cat.key + '/' + fname) {
+                    item.classList.add('selected');
+                }
+                item.innerHTML = '<span>' + display + '</span><span class="check">✓</span>';
+                item.addEventListener('click', () => {
+                    selectLut(cat.key, fname);
+                });
+                catDiv.appendChild(item);
+            }
+            lutPanelBody.appendChild(catDiv);
+        }
+    }
+
+    async function selectLut(category, filename) {
+        try {
+            // Show loading
+            lutNameEl.textContent = '加载中...';
+            const text = await loadLutContent(category, filename);
+            lutData = parseCubeFile(text);
+            selectedLutKey = category + '/' + filename;
+            const display = filename.replace(/\.(cube|CUBE)$/, '');
+            showingOriginal = false;
+            lutNameEl.textContent = display;
+            originalBtn.classList.add('enabled');
+            originalBtn.classList.remove('active');
+            lutPanelOverlay.classList.remove('visible');
+            render();
+        } catch (err) {
+            alert('LUT 加载失败: ' + err.message);
+            lutNameEl.textContent = '';
+        }
+    }
+
+    function openLutPanel() {
+        if (!hasImage) return;
+        buildLutPanel();
+        lutPanelOverlay.classList.add('visible');
+    }
+
+    lutPanelClose.addEventListener('click', () => {
+        lutPanelOverlay.classList.remove('visible');
+    });
+
+    lutPanelOverlay.addEventListener('click', (e) => {
+        if (e.target === lutPanelOverlay) {
+            lutPanelOverlay.classList.remove('visible');
+        }
+    });
+
+    // ---- Image upload ----
+    function handleImageFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            alert('请选择有效的图片文件（JPG / PNG / WebP）');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                sourceImage = img;
+                hasImage = true;
+                cardBody.classList.add('has-image');
+                styleBtn.classList.add('enabled');
+                clearBtn.classList.add('enabled');
+                lutData = null;
+                showingOriginal = false;
+                selectedLutKey = null;
+                lutNameEl.textContent = '';
+                originalBtn.classList.remove('enabled', 'active');
+                canvasOut.classList.add('visible');
+                render();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ---- External LUT file (fallback) ----
+    function handleLutFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                lutData = parseCubeFile(e.target.result);
+                selectedLutKey = null;
+                showingOriginal = false;
+                lutNameEl.textContent = file.name;
+                originalBtn.classList.add('enabled');
+                originalBtn.classList.remove('active');
+                render();
+            } catch (err) {
+                alert('无法解析 LUT 文件: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // ---- Reset ----
+    function reset() {
+        sourceImage = null;
+        lutData = null;
+        showingOriginal = false;
+        hasImage = false;
+        selectedLutKey = null;
+
+        canvasOut.classList.remove('visible');
+        cardBody.classList.remove('has-image');
+        ctx.clearRect(0, 0, canvasOut.width, canvasOut.height);
+
+        styleBtn.classList.remove('enabled');
+        originalBtn.classList.remove('enabled', 'active');
+        clearBtn.classList.remove('enabled');
+        lutNameEl.textContent = '';
+
+        imageInput.value = '';
+        lutInput.value = '';
+    }
+
+    // ---- Events ----
+    cardBody.addEventListener('click', (e) => {
+        if (e.target === cardBody || e.target === canvasOut || e.target.closest('.upload-placeholder')) {
+            imageInput.click();
+        }
+    });
+
+    styleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!hasImage) return;
+        openLutPanel();
+    });
+
+    // Original button: toggle on/off
+    originalBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!lutData) return;
+        showingOriginal = !showingOriginal;
+        if (showingOriginal) {
+            originalBtn.classList.add('active');
+        } else {
+            originalBtn.classList.remove('active');
+        }
+        render();
+    });
+
+    clearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!hasImage) return;
+        reset();
+    });
+
+    imageInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleImageFile(e.target.files[0]);
+        }
+    });
+
+    lutInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleLutFile(e.target.files[0]);
+        }
+    });
+
+    // Drag & drop
+    cardBody.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        cardBody.classList.add('drag-over');
+    });
+
+    cardBody.addEventListener('dragleave', () => {
+        cardBody.classList.remove('drag-over');
+    });
+
+    cardBody.addEventListener('drop', (e) => {
+        e.preventDefault();
+        cardBody.classList.remove('drag-over');
+        if (e.dataTransfer.files.length > 0) {
+            handleImageFile(e.dataTransfer.files[0]);
+        }
+    });
+</script>
+
+</body>
+</html>
