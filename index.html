@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUT Demo</title>
     <style>
-        /* ===== Design Tokens ===== */
+        /* ===== Neon Darkroom — 霓虹暗房 ===== */
         :root {
-            --bg: #0b0b0d;
-            --card-bg: #141416;
-            --card-border: oklch(100% 0 0 / 0.06);
-            --body-bg: #0e0e10;
-            --text-dim: oklch(100% 0 0 / 0.30);
-            --text-mid: oklch(100% 0 0 / 0.60);
-            --text-bright: oklch(100% 0 0 / 0.88);
-            --accent: oklch(72% 0.12 68);
-            --accent-dim: oklch(72% 0.12 68 / 0.15);
-            --danger: oklch(62% 0.16 18);
-            --danger-dim: oklch(62% 0.16 18 / 0.15);
-            --divider: oklch(100% 0 0 / 0.05);
-            --radius: 10px;
-            --radius-sm: 7px;
-            --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            --bg: #050508;
+            --card-bg: #0a0a10;
+            --card-border: oklch(100% 0 0 / 0.05);
+            --body-bg: #08080e;
+            --text-dim: oklch(100% 0 0 / 0.25);
+            --text-mid: oklch(100% 0 0 / 0.55);
+            --text-bright: oklch(100% 0 0 / 0.92);
+            --neon: oklch(78% 0.18 58);
+            --neon-glow: oklch(78% 0.18 58 / 0.5);
+            --neon-dim: oklch(78% 0.18 58 / 0.12);
+            --neon-pink: oklch(65% 0.2 0);
+            --neon-pink-glow: oklch(65% 0.2 0 / 0.4);
+            --divider: oklch(100% 0 0 / 0.04);
+            --radius: 6px;
+            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
             --font-mono: "SF Mono", "JetBrains Mono", monospace;
         }
 
@@ -60,7 +60,7 @@
 
         /* ---- Header ---- */
         .card-header {
-            padding: 12px 18px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -77,27 +77,31 @@
 
         .card-header h2 {
             font-size: 13px;
-            font-weight: 560;
-            letter-spacing: 0.03em;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
             color: var(--text-dim);
             cursor: default;
             transition: all 0.2s;
             white-space: nowrap;
-            padding: 7px 16px;
-            border-radius: 100px;
-            border: 1px solid var(--divider);
+            padding: 8px 18px;
+            border-radius: 4px;
+            border: 1px solid transparent;
             background: transparent;
         }
 
         .card-header h2.enabled {
-            color: var(--text-mid);
+            color: var(--neon);
             cursor: pointer;
+            border-color: oklch(78% 0.18 58 / 0.25);
+            text-shadow: 0 0 12px var(--neon-glow);
         }
 
         .card-header h2.enabled:hover {
-            color: var(--text-bright);
-            border-color: oklch(100% 0 0 / 0.18);
-            background: oklch(100% 0 0 / 0.04);
+            color: #fff;
+            background: var(--neon-dim);
+            border-color: oklch(78% 0.18 58 / 0.5);
+            box-shadow: 0 0 20px oklch(78% 0.18 58 / 0.15);
         }
 
         .card-header h2.enabled:active {
@@ -107,8 +111,11 @@
         .lut-name {
             font-family: var(--font-mono);
             font-size: 12px;
-            letter-spacing: 0.04em;
-            color: var(--accent);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--neon);
+            text-shadow: 0 0 8px var(--neon-glow);
             max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -122,35 +129,38 @@
         }
 
         .clear-btn {
-            font-size: 12px;
-            font-weight: 520;
-            letter-spacing: 0.03em;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
             color: var(--text-dim);
             cursor: default;
-            padding: 7px 16px;
+            padding: 8px 16px;
             border: 1px solid var(--divider);
-            border-radius: 100px;
+            border-radius: 4px;
             background: transparent;
             transition: all 0.2s;
             white-space: nowrap;
         }
 
         .clear-btn.enabled {
-            color: var(--danger);
-            border-color: var(--danger-dim);
+            color: var(--neon-pink);
+            border-color: oklch(65% 0.2 0 / 0.2);
             cursor: pointer;
+            text-shadow: 0 0 10px var(--neon-pink-glow);
         }
 
         .clear-btn.enabled:hover {
-            background: var(--danger-dim);
-            border-color: var(--danger);
+            background: oklch(65% 0.2 0 / 0.08);
+            border-color: oklch(65% 0.2 0 / 0.5);
+            box-shadow: 0 0 20px oklch(65% 0.2 0 / 0.15);
         }
 
         .clear-btn.enabled:active {
             transform: scale(0.97);
         }
 
-        /* ---- Body (image area) ---- */
+        /* ---- Body ---- */
         .card-body {
             position: relative;
             flex: 1;
@@ -164,11 +174,12 @@
         }
 
         .card-body:hover {
-            background: #101012;
+            background: #0c0c14;
         }
 
         .card-body.drag-over {
-            background: oklch(72% 0.12 68 / 0.04);
+            background: oklch(78% 0.18 58 / 0.03);
+            box-shadow: inset 0 0 0 2px oklch(78% 0.18 58 / 0.3);
         }
 
         .card-body canvas {
@@ -190,21 +201,24 @@
         }
 
         .upload-placeholder .icon {
-            font-size: 44px;
-            margin-bottom: 12px;
-            opacity: 0.5;
+            font-size: 48px;
+            margin-bottom: 14px;
+            opacity: 0.35;
         }
 
         .upload-placeholder .main-text {
-            font-size: 15px;
-            font-weight: 480;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
             color: var(--text-dim);
             margin-bottom: 6px;
         }
 
         .upload-placeholder .hint {
-            font-size: 12px;
-            color: oklch(100% 0 0 / 0.22);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: oklch(100% 0 0 / 0.15);
         }
 
         .card-body.has-image .upload-placeholder {
@@ -213,26 +227,27 @@
 
         .card-body input[type="file"] { display: none; }
 
-        /* ---- Footer (device buttons) ---- */
+        /* ---- Footer ---- */
         .card-footer {
-            padding: 10px 18px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 6px;
             border-top: 1px solid var(--divider);
             flex-shrink: 0;
         }
 
         .mode-btn {
             font-size: 11px;
-            font-weight: 520;
-            letter-spacing: 0.04em;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             color: var(--text-dim);
             cursor: pointer;
-            padding: 7px 18px;
+            padding: 9px 20px;
             border: 1px solid var(--divider);
-            border-radius: 100px;
+            border-radius: 4px;
             background: transparent;
             transition: all 0.2s;
             white-space: nowrap;
@@ -247,25 +262,26 @@
         }
 
         .mode-btn.selected {
-            color: var(--accent);
-            border-color: oklch(72% 0.12 68 / 0.35);
-            background: var(--accent-dim);
-            font-weight: 560;
+            color: var(--neon);
+            border-color: oklch(78% 0.18 58 / 0.4);
+            background: var(--neon-dim);
+            text-shadow: 0 0 10px var(--neon-glow);
+            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
         }
 
         .mode-btn.disabled {
-            color: oklch(100% 0 0 / 0.12);
+            color: oklch(100% 0 0 / 0.08);
             cursor: default;
             pointer-events: none;
             border-color: var(--divider);
         }
 
-        /* ---- LUT Selector Panel ---- */
+        /* ---- LUT Panel ---- */
         .lut-panel-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: oklch(0% 0 0 / 0.65);
+            background: oklch(0% 0 0 / 0.7);
             z-index: 100;
             align-items: center;
             justify-content: center;
@@ -278,7 +294,7 @@
         .lut-panel {
             background: var(--card-bg);
             border-radius: var(--radius);
-            border: 1px solid var(--card-border);
+            border: 1px solid oklch(78% 0.18 58 / 0.12);
             width: 90vw;
             max-width: 480px;
             max-height: 78vh;
@@ -296,10 +312,12 @@
         }
 
         .lut-panel-header h3 {
-            font-size: 14px;
-            font-weight: 560;
-            letter-spacing: 0.02em;
-            color: var(--text-mid);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--neon);
+            text-shadow: 0 0 8px var(--neon-glow);
         }
 
         .lut-panel-close {
@@ -307,13 +325,13 @@
             color: var(--text-dim);
             cursor: pointer;
             padding: 4px 8px;
-            border-radius: var(--radius-sm);
+            border-radius: 4px;
             transition: all 0.2s;
         }
 
         .lut-panel-close:hover {
-            color: var(--text-bright);
-            background: oklch(100% 0 0 / 0.05);
+            color: var(--neon-pink);
+            text-shadow: 0 0 8px var(--neon-pink-glow);
         }
 
         .lut-panel-body {
@@ -330,45 +348,51 @@
         .lut-category-title {
             font-family: var(--font-mono);
             font-size: 10px;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            padding: 12px 0 6px;
+            letter-spacing: 0.12em;
+            color: oklch(78% 0.18 58 / 0.35);
+            padding: 14px 0 6px;
+            text-shadow: 0 0 6px oklch(78% 0.18 58 / 0.15);
         }
 
         .lut-item {
             padding: 13px 16px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 460;
-            letter-spacing: 0.01em;
+            font-weight: 480;
+            letter-spacing: 0.03em;
             color: var(--text-mid);
-            transition: background 0.15s, color 0.15s;
+            transition: all 0.15s;
             display: flex;
             align-items: center;
             justify-content: space-between;
             min-height: 46px;
-            border-radius: 6px;
+            border-radius: 4px;
             margin: 0 4px;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            border: 1px solid transparent;
         }
 
         .lut-item:hover {
             background: oklch(100% 0 0 / 0.04);
             color: var(--text-bright);
+            border-color: oklch(100% 0 0 / 0.06);
         }
 
         .lut-item.selected {
-            color: var(--accent);
-            background: var(--accent-dim);
-            font-weight: 520;
+            color: var(--neon);
+            background: var(--neon-dim);
+            border-color: oklch(78% 0.18 58 / 0.2);
+            font-weight: 550;
+            text-shadow: 0 0 6px var(--neon-glow);
         }
 
         .lut-item .check {
-            color: var(--accent);
+            color: var(--neon);
             font-size: 13px;
+            text-shadow: 0 0 6px var(--neon-glow);
         }
 
         .lut-item:not(.selected) .check {
