@@ -58,7 +58,7 @@
             min-height: 0;
         }
 
-        /* ---- Header ---- */
+        /* ---- Header (设备状态 + 保存) ---- */
         .card-header {
             padding: 14px 20px;
             display: flex;
@@ -72,60 +72,64 @@
         .card-header-left {
             display: flex;
             align-items: center;
-            gap: 14px;
-        }
-
-        .card-header h2 {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            cursor: default;
-            transition: all 0.2s;
-            white-space: nowrap;
-            padding: 8px 18px;
-            border-radius: 4px;
-            border: 1px solid transparent;
-            background: transparent;
-        }
-
-        .card-header h2.enabled {
-            color: var(--neon);
-            cursor: pointer;
-            border-color: oklch(78% 0.18 58 / 0.25);
-            text-shadow: 0 0 12px var(--neon-glow);
-        }
-
-        .card-header h2.enabled:hover {
-            color: #fff;
-            background: var(--neon-dim);
-            border-color: oklch(78% 0.18 58 / 0.5);
-            box-shadow: 0 0 20px oklch(78% 0.18 58 / 0.15);
-        }
-
-        .card-header h2.enabled:active {
-            transform: scale(0.97);
-        }
-
-        .lut-name {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--neon);
-            text-shadow: 0 0 8px var(--neon-glow);
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            gap: 6px;
         }
 
         .card-header-right {
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        /* ---- Footer (风格选择) ---- */
+        .card-footer {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            border-top: 1px solid var(--divider);
+            flex-shrink: 0;
+        }
+
+        .card-footer-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .card-footer-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #styleBtn {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            cursor: default;
+            transition: all 0.2s;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #styleBtn.enabled {
+            color: var(--neon);
+            cursor: pointer;
+            text-shadow: 0 0 12px var(--neon-glow);
+        }
+
+        #styleBtn.enabled:hover {
+            color: #fff;
+            text-shadow: 0 0 16px var(--neon-glow);
+        }
+
+        #styleBtn.enabled:active {
+            transform: scale(0.97);
         }
 
         .clear-btn {
@@ -232,10 +236,16 @@
             padding: 12px 20px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             gap: 6px;
             border-top: 1px solid var(--divider);
             flex-shrink: 0;
+        }
+
+        .card-footer-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .mode-btn {
@@ -276,6 +286,42 @@
             border-color: var(--divider);
         }
 
+        /* ---- Save Button ---- */
+        .save-btn {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            cursor: default;
+            padding: 9px 20px;
+            border: 1px solid var(--divider);
+            border-radius: 4px;
+            background: transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .save-btn.enabled {
+            color: var(--neon);
+            border-color: oklch(78% 0.18 58 / 0.4);
+            cursor: pointer;
+            text-shadow: 0 0 10px var(--neon-glow);
+            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
+        }
+
+        .save-btn.enabled:hover {
+            background: var(--neon-dim);
+            border-color: oklch(78% 0.18 58 / 0.6);
+            box-shadow: 0 0 24px oklch(78% 0.18 58 / 0.15);
+        }
+
+        .save-btn.enabled:active {
+            transform: scale(0.97);
+        }
+
         /* ---- LUT Panel ---- */
         .lut-panel-overlay {
             display: none;
@@ -295,9 +341,8 @@
             background: var(--card-bg);
             border-radius: var(--radius);
             border: 1px solid oklch(78% 0.18 58 / 0.12);
-            width: 90vw;
-            max-width: 480px;
-            max-height: 78vh;
+            width: min(90vw, 720px);
+            max-height: 82vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -309,6 +354,7 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--divider);
+            flex-shrink: 0;
         }
 
         .lut-panel-header h3 {
@@ -337,66 +383,75 @@
         .lut-panel-body {
             flex: 1;
             overflow-y: auto;
-            padding: 8px 0;
+            padding: 12px 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .lut-panel-body::-webkit-scrollbar {
+            display: none;
         }
 
         .lut-category {
-            padding: 0 20px;
-            margin-bottom: 4px;
+            margin-bottom: 14px;
         }
 
         .lut-category-title {
             font-family: var(--font-mono);
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: oklch(78% 0.18 58 / 0.35);
-            padding: 14px 0 6px;
+            letter-spacing: 0.1em;
+            color: oklch(78% 0.18 58 / 0.45);
+            padding: 0 0 8px;
             text-shadow: 0 0 6px oklch(78% 0.18 58 / 0.15);
         }
 
+        .lut-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
         .lut-item {
-            padding: 13px 16px;
+            padding: 6px 14px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 480;
-            letter-spacing: 0.03em;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
             color: var(--text-mid);
             transition: all 0.15s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            min-height: 46px;
+            gap: 5px;
             border-radius: 4px;
-            margin: 0 4px;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            border: 1px solid transparent;
+            border: 1px solid var(--divider);
+            white-space: nowrap;
         }
 
         .lut-item:hover {
             background: oklch(100% 0 0 / 0.04);
             color: var(--text-bright);
-            border-color: oklch(100% 0 0 / 0.06);
+            border-color: oklch(100% 0 0 / 0.12);
         }
 
         .lut-item.selected {
             color: var(--neon);
             background: var(--neon-dim);
-            border-color: oklch(78% 0.18 58 / 0.2);
-            font-weight: 550;
+            border-color: oklch(78% 0.18 58 / 0.3);
             text-shadow: 0 0 6px var(--neon-glow);
         }
 
         .lut-item .check {
             color: var(--neon);
-            font-size: 13px;
+            font-size: 10px;
             text-shadow: 0 0 6px var(--neon-glow);
         }
 
         .lut-item:not(.selected) .check {
-            visibility: hidden;
+            display: none;
         }
     </style>
 </head>
@@ -407,11 +462,12 @@
     <div class="image-card">
         <div class="card-header">
             <div class="card-header-left">
-                <h2 id="styleBtn">选择风格</h2>
-                <span class="lut-name" id="lutName"></span>
+                <span class="mode-btn selected" data-mode="original">无设备</span>
+                <span class="mode-btn disabled" data-mode="zink">ZINK</span>
+                <span class="mode-btn disabled" data-mode="led">LED</span>
             </div>
             <div class="card-header-right">
-                <span class="clear-btn" id="clearBtn">清除风格</span>
+                <span class="save-btn" id="saveBtn">保存图片</span>
             </div>
         </div>
         <div class="card-body" id="cardBody">
@@ -425,9 +481,12 @@
             <input type="file" id="lutInput" accept=".cube,text/plain" style="display:none">
         </div>
         <div class="card-footer" id="cardFooter">
-            <span class="mode-btn selected" data-mode="original">无设备</span>
-            <span class="mode-btn disabled" data-mode="zink">ZINK</span>
-            <span class="mode-btn disabled" data-mode="led">LED</span>
+            <div class="card-footer-left">
+                <span id="styleBtn">选择风格</span>
+            </div>
+            <div class="card-footer-right">
+                <span class="clear-btn" id="clearBtn">清除风格</span>
+            </div>
         </div>
     </div>
 
@@ -491,8 +550,8 @@
 
     const cardBody      = document.getElementById('cardBody');
     const styleBtn      = document.getElementById('styleBtn');
-    const lutNameEl     = document.getElementById('lutName');
     const clearBtn      = document.getElementById('clearBtn');
+    const saveBtn       = document.getElementById('saveBtn');
     const canvasOut     = document.getElementById('canvasOut');
     const placeholder   = document.getElementById('placeholder');
     const imageInput    = document.getElementById('imageInput');
@@ -624,7 +683,7 @@
     function buildLutPanel() {
         lutPanelBody.innerHTML = '';
         if (!lutIndex) {
-            lutPanelBody.innerHTML = '<div class="lut-item" style="justify-content:center;color:#666;">加载 LUT 列表中...</div>';
+            lutPanelBody.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">加载 LUT 列表中...</div>';
             return;
         }
         const categories = (categoryOrder || Object.keys(lutIndex)).map(key => {
@@ -635,6 +694,9 @@
             const catDiv = document.createElement('div');
             catDiv.className = 'lut-category';
             catDiv.innerHTML = '<div class="lut-category-title">' + cat.label + '</div>';
+            
+            const tagsDiv = document.createElement('div');
+            tagsDiv.className = 'lut-tags';
             
             const files = lutIndex[cat.key] || [];
             for (const fname of files) {
@@ -648,25 +710,26 @@
                 item.addEventListener('click', () => {
                     selectLut(cat.key, fname);
                 });
-                catDiv.appendChild(item);
+                tagsDiv.appendChild(item);
             }
+            catDiv.appendChild(tagsDiv);
             lutPanelBody.appendChild(catDiv);
         }
     }
 
     async function selectLut(category, filename) {
         try {
-            lutNameEl.textContent = '加载中...';
+            styleBtn.textContent = '加载中...';
             const text = await loadLutContent(category, filename);
             lutData = parseCubeFile(text);
             selectedLutKey = category + '/' + filename;
             const display = filename.replace(/\.(cube|CUBE)$/, '');
-            lutNameEl.textContent = display;
+            styleBtn.textContent = category + ' - ' + display;
             lutPanelOverlay.classList.remove('visible');
             render();
         } catch (err) {
             alert('LUT 加载失败: ' + err.message);
-            lutNameEl.textContent = '';
+            styleBtn.textContent = '选择风格';
         }
     }
 
@@ -782,9 +845,10 @@
                 cardBody.classList.add('has-image');
                 styleBtn.classList.add('enabled');
                 clearBtn.classList.add('enabled');
+                saveBtn.classList.add('enabled');
                 lutData = null;
                 selectedLutKey = null;
-                lutNameEl.textContent = '';
+                styleBtn.textContent = '选择风格';
                 canvasOut.classList.add('visible');
                 enableDeviceButtons();
                 render();
@@ -802,7 +866,7 @@
             try {
                 lutData = parseCubeFile(e.target.result);
                 selectedLutKey = null;
-                lutNameEl.textContent = file.name;
+                styleBtn.textContent = file.name;
                 render();
             } catch (err) {
                 alert('无法解析 LUT 文件: ' + err.message);
@@ -815,7 +879,7 @@
     function clearFilter() {
         lutData = null;
         selectedLutKey = null;
-        lutNameEl.textContent = '';
+        styleBtn.textContent = '选择风格';
         render();
     }
 
@@ -832,14 +896,50 @@
         ctx.clearRect(0, 0, canvasOut.width, canvasOut.height);
 
         styleBtn.classList.remove('enabled');
+        styleBtn.textContent = '选择风格';
         clearBtn.classList.remove('enabled');
-        lutNameEl.textContent = '';
+        saveBtn.classList.remove('enabled');
 
         disableDeviceButtons();
 
         imageInput.value = '';
         lutInput.value = '';
     }
+
+    // ---- Save image ----
+    function getSaveFileName() {
+        const parts = [];
+        // 设备状态部分
+        if (deviceMode === 'original') {
+            parts.push('无设备');
+        } else {
+            parts.push(deviceMode.toUpperCase());
+        }
+        // LUT 风格部分
+        if (selectedLutKey) {
+            const slashIdx = selectedLutKey.lastIndexOf('/');
+            const category = selectedLutKey.substring(0, slashIdx);
+            const filename = selectedLutKey.substring(slashIdx + 1).replace(/\.(cube|CUBE)$/, '');
+            parts.push(category + '-' + filename);
+        } else {
+            parts.push('无风格');
+        }
+        return parts.join('-') + '.png';
+    }
+
+    function saveImage() {
+        if (!hasImage) return;
+        const link = document.createElement('a');
+        link.download = getSaveFileName();
+        link.href = canvasOut.toDataURL('image/png');
+        link.click();
+    }
+
+    saveBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!hasImage) return;
+        saveImage();
+    });
 
     // ---- Events ----
     cardBody.addEventListener('click', (e) => {
