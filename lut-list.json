@@ -1,10 +1,11 @@
 {
-  "order": ["fuji", "kodak", "negative", "live", "new" ],
+  "order": ["fuji", "kodak", "negative", "classic", "colors", "retro"],
   "categories": {
-     "fuji": [
+    "fuji": [
       "NC.cube",
       "NC2.cube",
-      "NN.cube"
+      "NN.cube",
+      "Vivid.cube"
     ],
     "kodak": [
       "Ektar 100.cube",
@@ -20,26 +21,26 @@
       "high contrast.cube",
       "soft pastel.cube"
     ],
-    "live": [
-      "Vivid.cube",
+    "classic": [
       "TFT.cube",
-      "丹橘.cube",
-      "复古美食.cube",
-      "复古胶片.cube",
-      "9.ms-fugumeishi.cube"
+      "Olympus.cube",
+      "经典人像.cube",
+      "经典夜景.cube"
     ],
-    "new": [
+    "colors": [
       "姜黄.cube",
       "Florida.cube",
-      "复古暖棕.cube",
+      "丹橘.cube",
       "新鲜美食.cube",
       "青蓝夜景.cube",
-      "经典夜景.cube",
-      "经典人像.cube",
-      "复古棕.cube",
-      "Olympus.cube",
       "深蓝色风格.cube",
       "滋味.cube"
-    ]   
+    ],
+    "retro": [
+      "复古美食.cube",
+      "复古胶片.cube",
+      "复古暖棕.cube",
+      "复古棕.cube"
+    ]
   }
 }

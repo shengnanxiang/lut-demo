@@ -2,7 +2,7 @@
 // Caches all .cube files on first visit, serves from cache thereafter.
 // Enables offline use and instant LUT switching.
 
-const CACHE_NAME = 'lut-cache-v2';
+const CACHE_NAME = 'lut-cache-v3';
 
 // Build list of all .cube files from lut-list.json categories
 const CUBE_FILES = [
@@ -10,6 +10,7 @@ const CUBE_FILES = [
     'fuji/NC.cube',
     'fuji/NC2.cube',
     'fuji/NN.cube',
+    'fuji/Vivid.cube',
     // kodak
     'kodak/Ektar 100.cube',
     'kodak/Gold 100.cube',
@@ -22,25 +23,24 @@ const CUBE_FILES = [
     'negative/faded vintage.cube',
     'negative/high contrast.cube',
     'negative/soft pastel.cube',
-    // live
-    'live/Vivid.cube',
-    'live/TFT.cube',
-    'live/丹橘.cube',
-    'live/复古美食.cube',
-    'live/复古胶片.cube',
-    'live/9.ms-fugumeishi.cube',
-    // new
-    'new/姜黄.cube',
-    'new/Florida.cube',
-    'new/复古暖棕.cube',
-    'new/新鲜美食.cube',
-    'new/青蓝夜景.cube',
-    'new/经典夜景.cube',
-    'new/经典人像.cube',
-    'new/复古棕.cube',
-    'new/Olympus.cube',
-    'new/深蓝色风格.cube',
-    'new/滋味.cube',
+    // classic
+    'classic/TFT.cube',
+    'classic/Olympus.cube',
+    'classic/经典人像.cube',
+    'classic/经典夜景.cube',
+    // colors
+    'colors/姜黄.cube',
+    'colors/Florida.cube',
+    'colors/丹橘.cube',
+    'colors/新鲜美食.cube',
+    'colors/青蓝夜景.cube',
+    'colors/深蓝色风格.cube',
+    'colors/滋味.cube',
+    // retro
+    'retro/复古美食.cube',
+    'retro/复古胶片.cube',
+    'retro/复古暖棕.cube',
+    'retro/复古棕.cube',
     // device
     'device/zink.cube',
     'device/led.cube',
