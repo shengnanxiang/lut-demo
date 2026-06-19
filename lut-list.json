@@ -1,5 +1,5 @@
 {
-  "order": ["live", "new", "fuji", "kodak", "negative"],
+  "order": ["fuji", "kodak", "negative", "live", "new" ],
   "categories": {
      "fuji": [
       "fujiNC2-Portrait.cube",
