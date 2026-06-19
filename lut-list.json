@@ -1,7 +1,7 @@
 {
-  "order": ["Live", "New", "Negative"],
+  "order": ["live", "new", "Negative"],
   "categories": {
-    "Live": [
+    "live": [
       "10.fj-xianyan.cube",
       "12.TFTzi.cube",
       "4.ms-danju.cube",
@@ -11,7 +11,7 @@
       "fujiNC2.cube",
       "fujiNN.cube"
     ],
-    "New": [
+    "new": [
       "20260125姜黄.cube",
       "7.Florida2.cube",
       "fugu-nuanzon.cube",
