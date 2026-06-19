@@ -1,5 +1,5 @@
 {
-  "order": ["live", "new", "Negative"],
+  "order": ["live", "new", "fuji", "kodak", "negative"],
   "categories": {
     "live": [
       "10.fj-xianyan.cube",
@@ -25,7 +25,9 @@
       "深蓝色风格.cube",
       "滋味.cube"
     ],
-    "Negative": [
+    "fuji": [],
+    "kodak": [],
+    "negative": [
       "negative_classic_warm.cube",
       "negative_cool_blue.cube",
       "negative_faded_vintage.cube",
