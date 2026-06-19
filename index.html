@@ -430,6 +430,8 @@
 
     // ---- Parse .cube file ----
     function parseCubeFile(text) {
+        // Normalize line endings and trim BOM
+        text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/^\uFEFF/, '');
         const lines = text.split('\n').map(l => l.trim());
         let size = 0;
         const values = [];
@@ -454,6 +456,7 @@
         }
 
         if (!size || values.length !== size * size * size * 3) {
+            console.error('parseCubeFile: size=' + size + ', values=' + values.length + ', expected=' + (size * size * size * 3) + ', textLen=' + text.length + ', lines=' + lines.length);
             throw new Error('Invalid .cube file (size=' + size + ', values=' + values.length + ')');
         }
         return { size, table: new Float32Array(values) };
