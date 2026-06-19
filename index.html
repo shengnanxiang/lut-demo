@@ -36,7 +36,7 @@
             font-family: var(--font);
             background: var(--bg);
             color: var(--text-mid);
-            padding: 14px 16px;
+            padding: 0px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -60,19 +60,19 @@
 
         /* ---- Header (设备状态 + 保存) ---- */
         .card-header {
-            padding: 14px 20px;
+            padding: 14px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--divider);
-            gap: 14px;
+            gap: 8px;
             flex-shrink: 0;
         }
 
         .card-header-left {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .card-header-right {
@@ -231,31 +231,57 @@
 
         .card-body input[type="file"] { display: none; }
 
-        /* ---- Footer ---- */
-        .card-footer {
-            padding: 12px 20px;
-            display: flex;
+        /* ---- Loading Overlay ---- */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: oklch(0% 0 0 / 0.72);
+            z-index: 10;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            gap: 6px;
-            border-top: 1px solid var(--divider);
-            flex-shrink: 0;
+            justify-content: center;
+            gap: 16px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
 
-        .card-footer-right {
+        .loading-overlay.visible {
             display: flex;
-            align-items: center;
-            gap: 6px;
+        }
+
+        .loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 2px solid oklch(100% 0 0 / 0.06);
+            border-top-color: var(--neon);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 18px var(--neon-glow), 0 0 40px oklch(78% 0.18 58 / 0.12);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--neon);
+            text-shadow: 0 0 10px var(--neon-glow);
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .mode-btn {
             font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: var(--text-dim);
             cursor: pointer;
-            padding: 9px 20px;
+            padding: 9px 14px;
             border: 1px solid var(--divider);
             border-radius: 4px;
             background: transparent;
@@ -290,11 +316,11 @@
         .save-btn {
             font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: var(--text-dim);
             cursor: default;
-            padding: 9px 20px;
+            padding: 9px 14px;
             border: 1px solid var(--divider);
             border-radius: 4px;
             background: transparent;
@@ -467,7 +493,7 @@
                 <span class="mode-btn disabled" data-mode="led">LED</span>
             </div>
             <div class="card-header-right">
-                <span class="save-btn" id="saveBtn">保存图片</span>
+                <span class="save-btn" id="saveBtn">保存</span>
             </div>
         </div>
         <div class="card-body" id="cardBody">
@@ -476,6 +502,10 @@
                 <div class="icon">📂</div>
                 <div class="main-text">点击此处选择本地图片</div>
                 <div class="hint">支持 JPG / PNG / WebP</div>
+            </div>
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">加载风格中</div>
             </div>
             <input type="file" id="imageInput" accept="image/*">
             <input type="file" id="lutInput" accept=".cube,text/plain" style="display:none">
@@ -554,6 +584,7 @@
     const saveBtn       = document.getElementById('saveBtn');
     const canvasOut     = document.getElementById('canvasOut');
     const placeholder   = document.getElementById('placeholder');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     const imageInput    = document.getElementById('imageInput');
     const lutInput      = document.getElementById('lutInput');
     const lutPanelOverlay = document.getElementById('lutPanelOverlay');
@@ -718,16 +749,20 @@
     }
 
     async function selectLut(category, filename) {
+        // Close panel immediately and show loading overlay
+        lutPanelOverlay.classList.remove('visible');
+        const display = filename.replace(/\.(cube|CUBE)$/, '');
+        styleBtn.textContent = category + ' - ' + display;
+        loadingOverlay.classList.add('visible');
+
         try {
-            styleBtn.textContent = '加载中...';
             const text = await loadLutContent(category, filename);
             lutData = parseCubeFile(text);
             selectedLutKey = category + '/' + filename;
-            const display = filename.replace(/\.(cube|CUBE)$/, '');
-            styleBtn.textContent = category + ' - ' + display;
-            lutPanelOverlay.classList.remove('visible');
+            loadingOverlay.classList.remove('visible');
             render();
         } catch (err) {
+            loadingOverlay.classList.remove('visible');
             alert('LUT 加载失败: ' + err.message);
             styleBtn.textContent = '选择风格';
         }
