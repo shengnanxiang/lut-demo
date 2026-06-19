@@ -1,6 +1,25 @@
 {
   "order": ["live", "new", "fuji", "kodak", "negative"],
   "categories": {
+     "fuji": [
+      "fujiNC2-Portrait.cube",
+      "fujiNC2.cube",
+      "fujiNN.cube"
+    ],
+    "kodak": [
+      "Ektar 100.cube",
+      "Gold 100.cube",
+      "Gold 200.cube",
+      "Portra 400.cube",
+      "Portra 800.cube"
+    ],
+    "negative": [
+      "negative_classic_warm.cube",
+      "negative_cool_blue.cube",
+      "negative_faded_vintage.cube",
+      "negative_high_contrast.cube",
+      "negative_soft_pastel.cube"
+    ],
     "live": [
       "10.fj-xianyan.cube",
       "12.TFTzi.cube",
@@ -21,19 +40,6 @@
       "奥林巴斯U2.cube",
       "深蓝色风格.cube",
       "滋味.cube"
-    ],
-    "fuji": [
-      "fujiNC2-Portrait.cube",
-      "fujiNC2.cube",
-      "fujiNN.cube"
-    ],
-    "kodak": [],
-    "negative": [
-      "negative_classic_warm.cube",
-      "negative_cool_blue.cube",
-      "negative_faded_vintage.cube",
-      "negative_high_contrast.cube",
-      "negative_soft_pastel.cube"
-    ]
+    ]   
   }
 }
