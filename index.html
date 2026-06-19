@@ -726,7 +726,17 @@
         reader.readAsText(file);
     }
 
-    // ---- Reset ----
+    // ---- Clear filter (keep image, reset style + device mode) ----
+    function clearFilter() {
+        lutData = null;
+        selectedLutKey = null;
+        lutNameEl.textContent = '';
+        setDeviceMode('original');
+        deviceLutData = null;
+        render();
+    }
+
+    // ---- Full reset (clear everything) ----
     function reset() {
         sourceImage = null;
         lutData = null;
@@ -764,7 +774,7 @@
     clearBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!hasImage) return;
-        reset();
+        clearFilter();
     });
 
     imageInput.addEventListener('change', (e) => {
