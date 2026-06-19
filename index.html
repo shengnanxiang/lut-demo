@@ -365,11 +365,16 @@
 
     async function loadLutIndex() {
         try {
-            const resp = await fetch('lut-list.json');
+            const resp = await fetch('lut-list.json?v=2');
             if (!resp.ok) throw new Error('Failed to load lut-list.json');
             const data = await resp.json();
-            lutIndex = data.categories || {};
-            categoryOrder = data.order || Object.keys(lutIndex);
+            // Normalize to lowercase so case never matters
+            lutIndex = {};
+            const raw = data.categories || {};
+            for (const key of Object.keys(raw)) {
+                lutIndex[key.toLowerCase()] = raw[key];
+            }
+            categoryOrder = (data.order || Object.keys(lutIndex)).map(k => k.toLowerCase());
         } catch (e) {
             console.error('Failed to load lut-list.json:', e);
             lutIndex = {};
@@ -378,8 +383,14 @@
     }
 
     async function fetchLutFile(path) {
+        // Try exact path first, then fallback to lowercase
         const url = LUT_BASE + '/' + path;
-        const resp = await fetch(url);
+        let resp = await fetch(url);
+        if (!resp.ok) {
+            // Try lowercase version
+            const lowerUrl = LUT_BASE + '/' + path.toLowerCase();
+            resp = await fetch(lowerUrl);
+        }
         if (!resp.ok) throw new Error('Failed to load: ' + path);
         return await resp.text();
     }
