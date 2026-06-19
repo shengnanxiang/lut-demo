@@ -1024,6 +1024,31 @@
             handleImageFile(e.dataTransfer.files[0]);
         }
     });
+
+    // ---- Service Worker registration & background preload ----
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+            console.log('[SW] Registered:', reg.scope);
+
+            // Listen for cache-status messages from SW
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data.type === 'cache-status') {
+                    console.log('[SW] Cache ready: ' + event.data.cached + '/' + event.data.total + ' files');
+                }
+            });
+
+            // After SW is active, trigger background preload of all cube files
+            // This ensures files not yet cached get fetched and stored
+            navigator.serviceWorker.ready.then(() => {
+                // Ask SW for current cache status
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage('cache-status');
+                }
+            });
+        }).catch((err) => {
+            console.warn('[SW] Registration failed:', err);
+        });
+    }
 </script>
 
 </body>
