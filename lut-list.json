@@ -2,9 +2,9 @@
   "order": ["fuji", "kodak", "negative", "live", "new" ],
   "categories": {
      "fuji": [
-      "fujiNC2-Portrait.cube",
-      "fujiNC2.cube",
-      "fujiNN.cube"
+      "NC.cube",
+      "NC2.cube",
+      "NN.cube"
     ],
     "kodak": [
       "Ektar 100.cube",
@@ -14,30 +14,30 @@
       "Portra 800.cube"
     ],
     "negative": [
-      "negative_classic_warm.cube",
-      "negative_cool_blue.cube",
-      "negative_faded_vintage.cube",
-      "negative_high_contrast.cube",
-      "negative_soft_pastel.cube"
+      "classic warm.cube",
+      "cool blue.cube",
+      "faded vintage.cube",
+      "high contrast.cube",
+      "soft pastel.cube"
     ],
     "live": [
-      "10.fj-xianyan.cube",
-      "12.TFTzi.cube",
-      "4.ms-danju.cube",
-      "5.ms-fugumeishi.cube",
-      "9.jp-fugujiaopian.cube",
+      "Vivid.cube",
+      "TFT.cube",
+      "丹橘.cube",
+      "复古美食.cube",
+      "复古胶片.cube",
       "9.ms-fugumeishi.cube"
     ],
     "new": [
-      "20260125姜黄.cube",
-      "7.Florida2.cube",
-      "fugu-nuanzon.cube",
-      "meishi-xinxian.cube",
-      "yejing-qinglansediao.cube",
-      "yejing11.CUBE",
-      "双lut叠加-人像.cube",
+      "姜黄.cube",
+      "Florida.cube",
+      "复古暖棕.cube",
+      "新鲜美食.cube",
+      "青蓝夜景.cube",
+      "经典夜景.cube",
+      "经典人像.cube",
       "复古棕.cube",
-      "奥林巴斯U2.cube",
+      "Olympus.cube",
       "深蓝色风格.cube",
       "滋味.cube"
     ]   

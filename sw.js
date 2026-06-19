@@ -2,14 +2,14 @@
 // Caches all .cube files on first visit, serves from cache thereafter.
 // Enables offline use and instant LUT switching.
 
-const CACHE_NAME = 'lut-cache-v1';
+const CACHE_NAME = 'lut-cache-v2';
 
 // Build list of all .cube files from lut-list.json categories
 const CUBE_FILES = [
     // fuji
-    'fuji/fujiNC2-Portrait.cube',
-    'fuji/fujiNC2.cube',
-    'fuji/fujiNN.cube',
+    'fuji/NC.cube',
+    'fuji/NC2.cube',
+    'fuji/NN.cube',
     // kodak
     'kodak/Ektar 100.cube',
     'kodak/Gold 100.cube',
@@ -17,28 +17,28 @@ const CUBE_FILES = [
     'kodak/Portra 400.cube',
     'kodak/Portra 800.cube',
     // negative
-    'negative/negative_classic_warm.cube',
-    'negative/negative_cool_blue.cube',
-    'negative/negative_faded_vintage.cube',
-    'negative/negative_high_contrast.cube',
-    'negative/negative_soft_pastel.cube',
+    'negative/classic warm.cube',
+    'negative/cool blue.cube',
+    'negative/faded vintage.cube',
+    'negative/high contrast.cube',
+    'negative/soft pastel.cube',
     // live
-    'live/10.fj-xianyan.cube',
-    'live/12.TFTzi.cube',
-    'live/4.ms-danju.cube',
-    'live/5.ms-fugumeishi.cube',
-    'live/9.jp-fugujiaopian.cube',
+    'live/Vivid.cube',
+    'live/TFT.cube',
+    'live/丹橘.cube',
+    'live/复古美食.cube',
+    'live/复古胶片.cube',
     'live/9.ms-fugumeishi.cube',
     // new
-    'new/20260125姜黄.cube',
-    'new/7.Florida2.cube',
-    'new/fugu-nuanzon.cube',
-    'new/meishi-xinxian.cube',
-    'new/yejing-qinglansediao.cube',
-    'new/yejing11.CUBE',
-    'new/双lut叠加-人像.cube',
+    'new/姜黄.cube',
+    'new/Florida.cube',
+    'new/复古暖棕.cube',
+    'new/新鲜美食.cube',
+    'new/青蓝夜景.cube',
+    'new/经典夜景.cube',
+    'new/经典人像.cube',
     'new/复古棕.cube',
-    'new/奥林巴斯U2.cube',
+    'new/Olympus.cube',
     'new/深蓝色风格.cube',
     'new/滋味.cube',
     // device
