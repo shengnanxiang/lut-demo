@@ -1,0 +1,36 @@
+{
+  "order": ["Live", "New", "Negative"],
+  "categories": {
+    "Live": [
+      "10.fj-xianyan.cube",
+      "12.TFTzi.cube",
+      "4.ms-danju.cube",
+      "5.ms-fugumeishi.cube",
+      "9.jp-fugujiaopian.cube",
+      "9.ms-fugumeishi.cube",
+      "fujiNC2.cube",
+      "fujiNN.cube"
+    ],
+    "New": [
+      "20260125姜黄.cube",
+      "7.Florida2.cube",
+      "fugu-nuanzon.cube",
+      "meishi-xinxian.cube",
+      "renxiang-fujiNC2.cube",
+      "yejing-qinglansediao.cube",
+      "yejing11.CUBE",
+      "双lut叠加-人像.cube",
+      "复古棕.cube",
+      "奥林巴斯U2.cube",
+      "深蓝色风格.cube",
+      "滋味.cube"
+    ],
+    "Negative": [
+      "negative_classic_warm.cube",
+      "negative_cool_blue.cube",
+      "negative_faded_vintage.cube",
+      "negative_high_contrast.cube",
+      "negative_soft_pastel.cube"
+    ]
+  }
+}
