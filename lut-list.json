@@ -7,16 +7,13 @@
       "4.ms-danju.cube",
       "5.ms-fugumeishi.cube",
       "9.jp-fugujiaopian.cube",
-      "9.ms-fugumeishi.cube",
-      "fujiNC2.cube",
-      "fujiNN.cube"
+      "9.ms-fugumeishi.cube"
     ],
     "new": [
       "20260125姜黄.cube",
       "7.Florida2.cube",
       "fugu-nuanzon.cube",
       "meishi-xinxian.cube",
-      "renxiang-fujiNC2.cube",
       "yejing-qinglansediao.cube",
       "yejing11.CUBE",
       "双lut叠加-人像.cube",
@@ -25,7 +22,11 @@
       "深蓝色风格.cube",
       "滋味.cube"
     ],
-    "fuji": [],
+    "fuji": [
+      "fujiNC2-Portrait.cube",
+      "fujiNC2.cube",
+      "fujiNN.cube"
+    ],
     "kodak": [],
     "negative": [
       "negative_classic_warm.cube",
