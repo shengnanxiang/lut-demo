@@ -343,7 +343,7 @@
             <input type="file" id="lutInput" accept=".cube,text/plain" style="display:none">
         </div>
         <div class="card-footer" id="cardFooter">
-            <span class="mode-btn selected" data-mode="original">原图</span>
+            <span class="mode-btn selected" data-mode="original">无设备</span>
             <span class="mode-btn disabled" data-mode="zink">ZINK</span>
             <span class="mode-btn disabled" data-mode="led">LED</span>
         </div>
@@ -729,13 +729,11 @@
         reader.readAsText(file);
     }
 
-    // ---- Clear filter (keep image, reset style + device mode) ----
+    // ---- Clear filter (keep image, remove only style LUT) ----
     function clearFilter() {
         lutData = null;
         selectedLutKey = null;
         lutNameEl.textContent = '';
-        setDeviceMode('original');
-        deviceLutData = null;
         render();
     }
 
