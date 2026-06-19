@@ -16,7 +16,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
             background: #0a0a0a;
             color: #e0e0e0;
-            padding: 16px;
+            padding: 12px;
         }
 
         .container {
@@ -38,12 +38,13 @@
         }
 
         .card-header {
-            padding: 16px 18px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #222;
             gap: 12px;
+            flex-shrink: 0;
         }
 
         .card-header-left {
@@ -53,7 +54,7 @@
         }
 
         .card-header h2 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: #555;
             cursor: default;
@@ -73,7 +74,7 @@
         .lut-name {
             font-size: 12px;
             color: #d4943a;
-            max-width: 160px;
+            max-width: 140px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -83,48 +84,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .toggle-btn {
-            font-size: 12px;
-            color: #555;
-            cursor: default;
-            padding: 4px 12px;
-            border: 1px solid #333;
-            border-radius: 6px;
-            background: transparent;
-            transition: color 0.2s, border-color 0.2s, background 0.2s;
-            white-space: nowrap;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .toggle-btn::before {
-            content: '◉';
-            font-size: 10px;
-        }
-
-        .toggle-btn.enabled {
-            color: #aaa;
-            cursor: pointer;
-        }
-
-        .toggle-btn.enabled:hover {
-            color: #fff;
-            border-color: #666;
-        }
-
-        .toggle-btn.active {
-            color: #d4943a;
-            border-color: #d4943a;
-            background: rgba(212,148,58,0.1);
-        }
-
-        .toggle-btn.active::before {
-            content: '◎';
         }
 
         .clear-btn {
@@ -189,19 +148,19 @@
         }
 
         .upload-placeholder .icon {
-            font-size: 48px;
-            margin-bottom: 12px;
+            font-size: 42px;
+            margin-bottom: 10px;
             opacity: 0.6;
         }
 
         .upload-placeholder .main-text {
-            font-size: 15px;
+            font-size: 14px;
             color: #888;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .upload-placeholder .hint {
-            font-size: 12px;
+            font-size: 11px;
             color: #555;
         }
 
@@ -210,6 +169,49 @@
         }
 
         .card-body input[type="file"] { display: none; }
+
+        /* Bottom bar: device mode selector */
+        .card-footer {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            border-top: 1px solid #222;
+            flex-shrink: 0;
+        }
+
+        .mode-btn {
+            font-size: 11px;
+            color: #555;
+            cursor: pointer;
+            padding: 4px 14px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: transparent;
+            transition: color 0.2s, border-color 0.2s, background 0.2s;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .mode-btn:hover {
+            color: #aaa;
+            border-color: #555;
+        }
+
+        .mode-btn.selected {
+            color: #d4943a;
+            border-color: #d4943a;
+            background: rgba(212,148,58,0.1);
+        }
+
+        .mode-btn.disabled {
+            color: #333;
+            cursor: default;
+            pointer-events: none;
+            border-color: #222;
+        }
 
         /* LUT selector panel */
         .lut-panel-overlay {
@@ -327,7 +329,6 @@
                 <span class="lut-name" id="lutName"></span>
             </div>
             <div class="card-header-right">
-                <span class="toggle-btn" id="originalBtn">原图</span>
                 <span class="clear-btn" id="clearBtn">清除</span>
             </div>
         </div>
@@ -340,6 +341,11 @@
             </div>
             <input type="file" id="imageInput" accept="image/*">
             <input type="file" id="lutInput" accept=".cube,text/plain" style="display:none">
+        </div>
+        <div class="card-footer" id="cardFooter">
+            <span class="mode-btn selected" data-mode="original">原图</span>
+            <span class="mode-btn disabled" data-mode="zink">ZINK</span>
+            <span class="mode-btn disabled" data-mode="led">LED</span>
         </div>
     </div>
 
@@ -368,7 +374,6 @@
             const resp = await fetch('lut-list.json?v=2');
             if (!resp.ok) throw new Error('Failed to load lut-list.json');
             const data = await resp.json();
-            // Normalize to lowercase so case never matters
             lutIndex = {};
             const raw = data.categories || {};
             for (const key of Object.keys(raw)) {
@@ -383,11 +388,9 @@
     }
 
     async function fetchLutFile(path) {
-        // Try exact path first, then fallback to lowercase
         const url = LUT_BASE + '/' + path;
         let resp = await fetch(url);
         if (!resp.ok) {
-            // Try lowercase version
             const lowerUrl = LUT_BASE + '/' + path.toLowerCase();
             resp = await fetch(lowerUrl);
         }
@@ -407,7 +410,6 @@
     const cardBody      = document.getElementById('cardBody');
     const styleBtn      = document.getElementById('styleBtn');
     const lutNameEl     = document.getElementById('lutName');
-    const originalBtn   = document.getElementById('originalBtn');
     const clearBtn      = document.getElementById('clearBtn');
     const canvasOut     = document.getElementById('canvasOut');
     const placeholder   = document.getElementById('placeholder');
@@ -419,10 +421,12 @@
     const ctx           = canvasOut.getContext('2d', { willReadFrequently: true });
 
     let sourceImage = null;
-    let lutData = null;
-    let showingOriginal = false;
+    let lutData = null;           // filter LUT (from panel)
+    let deviceLutData = null;     // device LUT (zink/led)
     let hasImage = false;
     let selectedLutKey = null;
+    let deviceMode = 'original';   // 'original' | 'zink' | 'led'
+    let deviceLoaded = { zink: false, led: false };
 
     // ---- Parse .cube file ----
     function parseCubeFile(text) {
@@ -455,30 +459,18 @@
         return { size, table: new Float32Array(values) };
     }
 
-    // ---- Apply 3D LUT ----
-    function applyLUT(image, lut) {
+    // ---- Apply 3D LUT to canvas pixel data ----
+    function applyLUTToPixels(srcPixels, w, h, lut) {
         const { size, table } = lut;
-        const w = image.naturalWidth || image.width;
-        const h = image.naturalHeight || image.height;
-
-        canvasOut.width = w;
-        canvasOut.height = h;
-
-        ctx.drawImage(image, 0, 0, w, h);
-        const srcData = ctx.getImageData(0, 0, w, h);
-        const src = srcData.data;
-
-        const outData = ctx.createImageData(w, h);
-        const dst = outData.data;
-
         const maxIdx = size - 1;
         const n = size * size;
+        const dst = new Uint8ClampedArray(srcPixels.length);
 
-        for (let i = 0; i < src.length; i += 4) {
-            const r = src[i]     / 255;
-            const g = src[i + 1] / 255;
-            const b = src[i + 2] / 255;
-            const a = src[i + 3];
+        for (let i = 0; i < srcPixels.length; i += 4) {
+            const r = srcPixels[i]     / 255;
+            const g = srcPixels[i + 1] / 255;
+            const b = srcPixels[i + 2] / 255;
+            const a = srcPixels[i + 3];
 
             const rf = Math.min(r * maxIdx, maxIdx);
             const gf = Math.min(g * maxIdx, maxIdx);
@@ -516,19 +508,31 @@
             }
             dst[i + 3] = a;
         }
-
-        ctx.putImageData(outData, 0, 0);
+        return dst;
     }
 
     function render() {
         if (!sourceImage) return;
-        if (!lutData || showingOriginal) {
-            canvasOut.width = sourceImage.naturalWidth || sourceImage.width;
-            canvasOut.height = sourceImage.naturalHeight || sourceImage.height;
-            ctx.drawImage(sourceImage, 0, 0);
-        } else {
-            applyLUT(sourceImage, lutData);
+        const w = sourceImage.naturalWidth || sourceImage.width;
+        const h = sourceImage.naturalHeight || sourceImage.height;
+        canvasOut.width = w;
+        canvasOut.height = h;
+
+        // Step 1: draw source image
+        ctx.drawImage(sourceImage, 0, 0, w, h);
+        let imageData = ctx.getImageData(0, 0, w, h);
+
+        // Step 2: apply filter LUT if selected
+        if (lutData) {
+            imageData.data.set(applyLUTToPixels(imageData.data, w, h, lutData));
         }
+
+        // Step 3: apply device LUT if not in original mode
+        if (deviceMode !== 'original' && deviceLutData) {
+            imageData.data.set(applyLUTToPixels(imageData.data, w, h, deviceLutData));
+        }
+
+        ctx.putImageData(imageData, 0, 0);
     }
 
     // ---- LUT Panel ----
@@ -567,16 +571,12 @@
 
     async function selectLut(category, filename) {
         try {
-            // Show loading
             lutNameEl.textContent = '加载中...';
             const text = await loadLutContent(category, filename);
             lutData = parseCubeFile(text);
             selectedLutKey = category + '/' + filename;
             const display = filename.replace(/\.(cube|CUBE)$/, '');
-            showingOriginal = false;
             lutNameEl.textContent = display;
-            originalBtn.classList.add('enabled');
-            originalBtn.classList.remove('active');
             lutPanelOverlay.classList.remove('visible');
             render();
         } catch (err) {
@@ -601,6 +601,87 @@
         }
     });
 
+    // ---- Device LUT loading ----
+    async function loadDeviceLut(mode) {
+        if (mode === 'original') return;
+        if (deviceLoaded[mode]) return; // already loaded
+        try {
+            const text = await fetchLutFile('device/' + mode + '.cube');
+            const parsed = parseCubeFile(text);
+            // Cache parsed data
+            if (mode === 'zink') window._zinkLut = parsed;
+            if (mode === 'led') window._ledLut = parsed;
+            deviceLoaded[mode] = true;
+        } catch (err) {
+            console.error('Failed to load device LUT (' + mode + '):', err);
+            alert('设备 LUT 加载失败 (' + mode + '): ' + err.message);
+        }
+    }
+
+    function getDeviceLut(mode) {
+        if (mode === 'zink') return window._zinkLut || null;
+        if (mode === 'led') return window._ledLut || null;
+        return null;
+    }
+
+    // ---- Device mode buttons ----
+    const modeBtns = document.querySelectorAll('.mode-btn');
+
+    function setDeviceMode(mode) {
+        if (deviceMode === mode) return;
+        deviceMode = mode;
+        deviceLutData = getDeviceLut(mode);
+
+        // Update button states
+        modeBtns.forEach(b => {
+            if (b.dataset.mode === mode) {
+                b.classList.add('selected');
+            } else {
+                b.classList.remove('selected');
+            }
+        });
+
+        render();
+    }
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const mode = btn.dataset.mode;
+            if (btn.classList.contains('disabled')) return;
+
+            // Load device LUT if needed
+            if (mode !== 'original' && !deviceLoaded[mode]) {
+                btn.textContent = '加载中...';
+                await loadDeviceLut(mode);
+                btn.textContent = mode.toUpperCase();
+            }
+
+            setDeviceMode(mode);
+        });
+    });
+
+    // Enable device buttons when image is loaded
+    function enableDeviceButtons() {
+        modeBtns.forEach(b => {
+            if (b.dataset.mode !== 'original') {
+                b.classList.remove('disabled');
+            }
+        });
+    }
+
+    function disableDeviceButtons() {
+        modeBtns.forEach(b => {
+            if (b.dataset.mode !== 'original') {
+                b.classList.add('disabled');
+            }
+        });
+        setDeviceMode('original');
+        deviceLoaded = { zink: false, led: false };
+        window._zinkLut = null;
+        window._ledLut = null;
+    }
+
     // ---- Image upload ----
     function handleImageFile(file) {
         if (!file || !file.type.startsWith('image/')) {
@@ -617,11 +698,10 @@
                 styleBtn.classList.add('enabled');
                 clearBtn.classList.add('enabled');
                 lutData = null;
-                showingOriginal = false;
                 selectedLutKey = null;
                 lutNameEl.textContent = '';
-                originalBtn.classList.remove('enabled', 'active');
                 canvasOut.classList.add('visible');
+                enableDeviceButtons();
                 render();
             };
             img.src = e.target.result;
@@ -637,10 +717,7 @@
             try {
                 lutData = parseCubeFile(e.target.result);
                 selectedLutKey = null;
-                showingOriginal = false;
                 lutNameEl.textContent = file.name;
-                originalBtn.classList.add('enabled');
-                originalBtn.classList.remove('active');
                 render();
             } catch (err) {
                 alert('无法解析 LUT 文件: ' + err.message);
@@ -653,7 +730,7 @@
     function reset() {
         sourceImage = null;
         lutData = null;
-        showingOriginal = false;
+        deviceLutData = null;
         hasImage = false;
         selectedLutKey = null;
 
@@ -662,9 +739,10 @@
         ctx.clearRect(0, 0, canvasOut.width, canvasOut.height);
 
         styleBtn.classList.remove('enabled');
-        originalBtn.classList.remove('enabled', 'active');
         clearBtn.classList.remove('enabled');
         lutNameEl.textContent = '';
+
+        disableDeviceButtons();
 
         imageInput.value = '';
         lutInput.value = '';
@@ -681,19 +759,6 @@
         e.stopPropagation();
         if (!hasImage) return;
         openLutPanel();
-    });
-
-    // Original button: toggle on/off
-    originalBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!lutData) return;
-        showingOriginal = !showingOriginal;
-        if (showingOriginal) {
-            originalBtn.classList.add('active');
-        } else {
-            originalBtn.classList.remove('active');
-        }
-        render();
     });
 
     clearBtn.addEventListener('click', (e) => {
