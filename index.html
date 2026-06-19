@@ -76,28 +76,32 @@
         }
 
         .card-header h2 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 560;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.03em;
             color: var(--text-dim);
             cursor: default;
-            transition: color 0.2s;
+            transition: all 0.2s;
             white-space: nowrap;
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid transparent;
+            padding: 7px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--divider);
+            background: transparent;
         }
 
         .card-header h2.enabled {
             color: var(--text-mid);
             cursor: pointer;
-            border-color: var(--divider);
         }
 
         .card-header h2.enabled:hover {
             color: var(--text-bright);
-            border-color: oklch(100% 0 0 / 0.12);
-            background: oklch(100% 0 0 / 0.03);
+            border-color: oklch(100% 0 0 / 0.18);
+            background: oklch(100% 0 0 / 0.04);
+        }
+
+        .card-header h2.enabled:active {
+            transform: scale(0.97);
         }
 
         .lut-name {
@@ -119,13 +123,13 @@
 
         .clear-btn {
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 520;
             letter-spacing: 0.03em;
             color: var(--text-dim);
             cursor: default;
-            padding: 6px 16px;
+            padding: 7px 16px;
             border: 1px solid var(--divider);
-            border-radius: var(--radius-sm);
+            border-radius: 100px;
             background: transparent;
             transition: all 0.2s;
             white-space: nowrap;
@@ -140,6 +144,10 @@
         .clear-btn.enabled:hover {
             background: var(--danger-dim);
             border-color: var(--danger);
+        }
+
+        .clear-btn.enabled:active {
+            transform: scale(0.97);
         }
 
         /* ---- Body (image area) ---- */
@@ -379,7 +387,7 @@
                 <span class="lut-name" id="lutName"></span>
             </div>
             <div class="card-header-right">
-                <span class="clear-btn" id="clearBtn">清除</span>
+                <span class="clear-btn" id="clearBtn">清除风格</span>
             </div>
         </div>
         <div class="card-body" id="cardBody">
