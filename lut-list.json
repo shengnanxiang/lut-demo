@@ -3,8 +3,6 @@
   "categories": {
     "fuji": [
       "NC.cube",
-      "NC2.cube",
-      "NN.cube",
       "Vivid.cube"
     ],
     "kodak": [
@@ -24,20 +22,16 @@
     "classic": [
       "TFT.cube",
       "Olympus.cube",
-      "经典人像.cube",
-      "经典夜景.cube"
+      "经典人像.cube"
     ],
     "colors": [
       "姜黄.cube",
       "Florida.cube",
       "丹橘.cube",
-      "新鲜美食.cube",
       "青蓝夜景.cube",
-      "深蓝色风格.cube",
       "滋味.cube"
     ],
     "retro": [
-      "复古美食.cube",
       "复古胶片.cube",
       "复古暖棕.cube",
       "复古棕.cube"
