@@ -637,6 +637,25 @@
     // Initialize
     loadLutIndex();
 
+    // ---- Display name mapping for "for cam" folder ----
+    const CAM_DISPLAY_MAP = {
+        '1.portrait-fujiNC2 48%': 'fujiNC2 48%',
+        '2.Scenery-fujiNN': 'fujiNN',
+        '3.portrait-Florida2': 'Florida2',
+        '4.Food-fugumeishi': '复古美食',
+        '5.Food-xinxian': '新鲜',
+        '6.portrait-deepblue': 'deepblue',
+        '7.night-yejing11': '夜景11',
+    };
+
+    function formatLutName(category, filename) {
+        const base = filename.replace(/\.(cube|CUBE)$/, '');
+        if (category === 'for cam' && CAM_DISPLAY_MAP[base]) {
+            return CAM_DISPLAY_MAP[base];
+        }
+        return base;
+    }
+
     const cardBody      = document.getElementById('cardBody');
     const styleBtn      = document.getElementById('styleBtn');
     const clearBtn      = document.getElementById('clearBtn');
@@ -790,7 +809,7 @@
             
             const files = lutIndex[cat.key] || [];
             for (const fname of files) {
-                const display = fname.replace(/\.(cube|CUBE)$/, '');
+                const display = formatLutName(cat.key, fname);
                 const item = document.createElement('div');
                 item.className = 'lut-item';
                 if (selectedLutKey === cat.key + '/' + fname) {
@@ -810,7 +829,7 @@
     async function selectLut(category, filename) {
         // Close panel immediately and show loading overlay
         lutPanelOverlay.classList.remove('visible');
-        const display = filename.replace(/\.(cube|CUBE)$/, '');
+        const display = formatLutName(category, filename);
         styleBtn.textContent = category + ' - ' + display;
         loadingOverlay.classList.add('visible');
 

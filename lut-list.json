@@ -1,5 +1,5 @@
 {
-  "order": ["fuji", "kodak", "negative", "classic", "colors", "retro"],
+  "order": ["fuji", "kodak", "negative", "classic", "colors", "retro", "for cam"],
   "categories": {
     "fuji": [
       "NC.cube",
@@ -41,6 +41,15 @@
       "复古胶片.cube",
       "复古暖棕.cube",
       "复古棕.cube"
+    ],
+    "for cam": [
+      "1.portrait-fujiNC2 48%.cube",
+      "2.Scenery-fujiNN.cube",
+      "3.portrait-Florida2.cube",
+      "4.Food-fugumeishi.cube",
+      "5.Food-xinxian.cube",
+      "6.portrait-deepblue.cube",
+      "7.night-yejing11.CUBE"
     ]
   }
 }
