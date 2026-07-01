@@ -1,5 +1,5 @@
 {
-  "order": ["fuji", "kodak", "negative", "classic", "colors", "retro", "for cam"],
+  "order": ["fuji", "kodak", "negative", "classic", "colors", "retro", "for cam", "opt for zink"],
   "categories": {
     "fuji": [
       "NC.cube",
@@ -44,6 +44,19 @@
       "5.Food-xinxian.cube",
       "6.portrait-deepblue.cube",
       "7.night-yejing11.CUBE"
+    ],
+    "opt for zink": [
+      "08.retroportrait-doublelut.cube",
+      "09.portrait-baoman.cube",
+      "10.Camera-Olympus-u2.cube",
+      "11.Food-ziwei.cube",
+      "12.Food-jianghuang.cube",
+      "13.Food-danju.cube",
+      "14.Food-TFTzi 75%.cube",
+      "15retro-warmbrown.cube",
+      "16.retro-brown.cube",
+      "17.Scenery8-xianyan.cube",
+      "18.Scenery-qinglansediao.cube"
     ]
   }
 }

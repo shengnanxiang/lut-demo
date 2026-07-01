@@ -637,21 +637,36 @@
     // Initialize
     loadLutIndex();
 
-    // ---- Display name mapping for "for cam" folder ----
-    const CAM_DISPLAY_MAP = {
-        '1.portrait-fujiNC2 48%': 'fujiNC2 48%',
-        '2.Scenery-fujiNN': 'fujiNN',
-        '3.portrait-Florida2': 'Florida2',
-        '4.Food-fugumeishi': '复古美食',
-        '5.Food-xinxian': '新鲜',
-        '6.portrait-deepblue': 'deepblue',
-        '7.night-yejing11': '夜景11',
+    // ---- Display name mapping for "for cam" and "opt for zink" ----
+    const DISPLAY_MAP = {
+        'for cam': {
+            '1.portrait-fujiNC2 48%': 'fujiNC2 48%',
+            '2.Scenery-fujiNN': 'fujiNN',
+            '3.portrait-Florida2': 'Florida2',
+            '4.Food-fugumeishi': '复古美食',
+            '5.Food-xinxian': '新鲜',
+            '6.portrait-deepblue': 'deepblue',
+            '7.night-yejing11': '夜景11',
+        },
+        'opt for zink': {
+            '08.retroportrait-doublelut': 'retroportrait-doublelut',
+            '09.portrait-baoman': 'portrait-baoman',
+            '10.Camera-Olympus-u2': 'camera-Olympus-u2',
+            '11.Food-ziwei': 'food-ziwei',
+            '12.Food-jianghuang': 'food-jianghuang',
+            '13.Food-danju': 'food-danju',
+            '14.Food-TFTzi 75%': 'food-TFTzi 75%',
+            '15retro-warmbrown': 'retro-warmbrown',
+            '16.retro-brown': 'retro-brown',
+            '17.Scenery8-xianyan': 'scenery-xianyan',
+            '18.Scenery-qinglansediao': 'scenery-qinglansediao',
+        },
     };
 
     function formatLutName(category, filename) {
         const base = filename.replace(/\.(cube|CUBE)$/, '');
-        if (category === 'for cam' && CAM_DISPLAY_MAP[base]) {
-            return CAM_DISPLAY_MAP[base];
+        if (DISPLAY_MAP[category] && DISPLAY_MAP[category][base]) {
+            return DISPLAY_MAP[category][base];
         }
         return base;
     }
