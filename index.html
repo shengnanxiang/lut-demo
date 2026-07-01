@@ -312,6 +312,61 @@
             border-color: var(--divider);
         }
 
+        /* ---- ZINK dropdown ---- */
+        .mode-select {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 9px 14px;
+            border: 1px solid var(--divider);
+            border-radius: 4px;
+            background: transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+            font-family: inherit;
+            min-width: 120px;
+        }
+
+        .mode-select:hover {
+            color: var(--text-mid);
+            border-color: oklch(100% 0 0 / 0.15);
+            background: oklch(100% 0 0 / 0.03);
+        }
+
+        .mode-select:focus {
+            border-color: oklch(78% 0.18 58 / 0.4);
+            box-shadow: 0 0 12px oklch(78% 0.18 58 / 0.1);
+        }
+
+        .mode-select.selected {
+            color: var(--neon);
+            border-color: oklch(78% 0.18 58 / 0.4);
+            background: var(--neon-dim);
+            text-shadow: 0 0 10px var(--neon-glow);
+            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
+        }
+
+        .mode-select.disabled {
+            color: oklch(100% 0 0 / 0.08);
+            cursor: default;
+            pointer-events: none;
+            border-color: var(--divider);
+            opacity: 0.5;
+        }
+
+        .mode-select option {
+            background: #0a0a10;
+            color: #ccc;
+        }
+
         /* ---- Save Button ---- */
         .save-btn {
             font-size: 11px;
@@ -489,7 +544,12 @@
         <div class="card-header">
             <div class="card-header-left">
                 <span class="mode-btn selected" data-mode="original">无设备</span>
-                <span class="mode-btn disabled" data-mode="zink">ZINK</span>
+                <select class="mode-select disabled" id="zinkSelect">
+                    <option value="">ZINK</option>
+                    <option value="zink">ZINK v1.1</option>
+                    <option value="zink2">ZINK v1.2</option>
+                    <option value="zink3">ZINK v1.3</option>
+                </select>
                 <span class="mode-btn disabled" data-mode="led">LED</span>
             </div>
             <div class="card-header-right">
@@ -597,8 +657,8 @@
     let deviceLutData = null;     // device LUT (zink/led)
     let hasImage = false;
     let selectedLutKey = null;
-    let deviceMode = 'original';   // 'original' | 'zink' | 'led'
-    let deviceLoaded = { zink: false, led: false };
+    let deviceMode = 'original';   // 'original' | 'zink' | 'zink2' | 'zink3' | 'led'
+    let deviceLoaded = { zink: false, zink2: false, zink3: false, led: false };
 
     // ---- Parse .cube file ----
     function parseCubeFile(text) {
@@ -786,14 +846,15 @@
 
     // ---- Device LUT loading ----
     async function loadDeviceLut(mode) {
-        if (mode === 'original') return;
-        if (deviceLoaded[mode]) return; // already loaded
+        if (mode === 'original' || !mode) return;
+        if (deviceLoaded[mode]) return;
+        // Map mode to filename
+        const fileMap = { zink: 'zink.cube', zink2: 'zink2.cube', zink3: 'zink3.cube', led: 'led.cube' };
+        const filename = fileMap[mode] || (mode + '.cube');
         try {
-            const text = await fetchLutFile('device/' + mode + '.cube');
+            const text = await fetchLutFile('device/' + filename);
             const parsed = parseCubeFile(text);
-            // Cache parsed data
-            if (mode === 'zink') window._zinkLut = parsed;
-            if (mode === 'led') window._ledLut = parsed;
+            window['_lut_' + mode] = parsed;
             deviceLoaded[mode] = true;
         } catch (err) {
             console.error('Failed to load device LUT (' + mode + '):', err);
@@ -802,20 +863,19 @@
     }
 
     function getDeviceLut(mode) {
-        if (mode === 'zink') return window._zinkLut || null;
-        if (mode === 'led') return window._ledLut || null;
-        return null;
+        return window['_lut_' + mode] || null;
     }
 
-    // ---- Device mode buttons ----
+    // ---- Device mode buttons (original + LED) ----
     const modeBtns = document.querySelectorAll('.mode-btn');
+    const zinkSelect = document.getElementById('zinkSelect');
 
     function setDeviceMode(mode) {
         if (deviceMode === mode) return;
         deviceMode = mode;
         deviceLutData = getDeviceLut(mode);
 
-        // Update button states
+        // Update original/LED button states
         modeBtns.forEach(b => {
             if (b.dataset.mode === mode) {
                 b.classList.add('selected');
@@ -824,16 +884,25 @@
             }
         });
 
+        // Update ZINK dropdown
+        if (mode && mode.startsWith('zink')) {
+            zinkSelect.value = mode;
+            zinkSelect.classList.add('selected');
+        } else {
+            zinkSelect.value = '';
+            zinkSelect.classList.remove('selected');
+        }
+
         render();
     }
 
+    // Original + LED button clicks
     modeBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const mode = btn.dataset.mode;
             if (btn.classList.contains('disabled')) return;
 
-            // Load device LUT if needed
             if (mode !== 'original' && !deviceLoaded[mode]) {
                 btn.textContent = '加载中...';
                 await loadDeviceLut(mode);
@@ -844,6 +913,22 @@
         });
     });
 
+    // ZINK dropdown change
+    zinkSelect.addEventListener('change', async function(e) {
+        e.stopPropagation();
+        const mode = this.value;
+        if (!mode) {
+            setDeviceMode('original');
+            return;
+        }
+
+        if (!deviceLoaded[mode]) {
+            await loadDeviceLut(mode);
+        }
+
+        setDeviceMode(mode);
+    });
+
     // Enable device buttons when image is loaded
     function enableDeviceButtons() {
         modeBtns.forEach(b => {
@@ -851,6 +936,7 @@
                 b.classList.remove('disabled');
             }
         });
+        zinkSelect.classList.remove('disabled');
     }
 
     function disableDeviceButtons() {
@@ -859,10 +945,11 @@
                 b.classList.add('disabled');
             }
         });
+        zinkSelect.classList.add('disabled');
+        zinkSelect.value = '';
+        zinkSelect.classList.remove('selected');
         setDeviceMode('original');
-        deviceLoaded = { zink: false, led: false };
-        window._zinkLut = null;
-        window._ledLut = null;
+        deviceLoaded = { zink: false, zink2: false, zink3: false, led: false };
     }
 
     // ---- Image upload ----
