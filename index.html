@@ -545,7 +545,6 @@
             <div class="card-header-left">
                 <span class="mode-btn selected" data-mode="original">无设备</span>
                 <select class="mode-select disabled" id="zinkSelect">
-                    <option value="">ZINK</option>
                     <option value="zink">ZINK v1.1</option>
                     <option value="zink2">ZINK v1.2</option>
                     <option value="zink3">ZINK v1.3</option>
@@ -917,10 +916,6 @@
     zinkSelect.addEventListener('change', async function(e) {
         e.stopPropagation();
         const mode = this.value;
-        if (!mode) {
-            setDeviceMode('original');
-            return;
-        }
 
         if (!deviceLoaded[mode]) {
             await loadDeviceLut(mode);
