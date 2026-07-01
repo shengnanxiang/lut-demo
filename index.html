@@ -946,10 +946,20 @@
         });
     });
 
-    // ZINK dropdown change
+    // ZINK dropdown — use both change and click for robust selection
+    let zinkPendingMode = null;
+
     zinkSelect.addEventListener('change', async function(e) {
         e.stopPropagation();
-        const mode = this.value;
+        zinkPendingMode = this.value;
+    });
+
+    zinkSelect.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        // Wait a tick for change to fire, then apply
+        await new Promise(r => setTimeout(r, 0));
+        const mode = zinkPendingMode || this.value;
+        if (!mode) return;
 
         if (!deviceLoaded[mode]) {
             await loadDeviceLut(mode);
@@ -1002,6 +1012,8 @@
                 styleBtn.textContent = '选择风格';
                 canvasOut.classList.add('visible');
                 enableDeviceButtons();
+                // Preload default zink v1.1
+                loadDeviceLut('zink');
                 render();
             };
             img.src = e.target.result;
