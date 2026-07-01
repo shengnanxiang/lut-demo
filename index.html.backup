@@ -5,26 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUT Demo</title>
     <style>
-        /* ===== Neon Darkroom — 霓虹暗房 ===== */
-        :root {
-            --bg: #050508;
-            --card-bg: #0a0a10;
-            --card-border: oklch(100% 0 0 / 0.05);
-            --body-bg: #08080e;
-            --text-dim: oklch(100% 0 0 / 0.25);
-            --text-mid: oklch(100% 0 0 / 0.55);
-            --text-bright: oklch(100% 0 0 / 0.92);
-            --neon: oklch(78% 0.18 58);
-            --neon-glow: oklch(78% 0.18 58 / 0.5);
-            --neon-dim: oklch(78% 0.18 58 / 0.12);
-            --neon-pink: oklch(65% 0.2 0);
-            --neon-pink-glow: oklch(65% 0.2 0 / 0.4);
-            --divider: oklch(100% 0 0 / 0.04);
-            --radius: 6px;
-            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-            --font-mono: "SF Mono", "JetBrains Mono", monospace;
-        }
-
         * { margin:0; padding:0; box-sizing: border-box; }
 
         html, body {
@@ -33,11 +13,10 @@
         }
 
         body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text-mid);
-            padding: 0px;
-            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 12px;
         }
 
         .container {
@@ -48,31 +27,57 @@
         }
 
         .image-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: #161616;
+            border-radius: 16px;
             overflow: hidden;
-            border: 1px solid var(--card-border);
+            border: 1px solid #2a2a2a;
             display: flex;
             flex-direction: column;
             flex: 1;
             min-height: 0;
         }
 
-        /* ---- Header (设备状态 + 保存) ---- */
         .card-header {
-            padding: 14px 14px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--divider);
-            gap: 8px;
+            border-bottom: 1px solid #222;
+            gap: 12px;
             flex-shrink: 0;
         }
 
         .card-header-left {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 12px;
+        }
+
+        .card-header h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #555;
+            cursor: default;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .card-header h2.enabled {
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .card-header h2.enabled:hover {
+            color: #d4943a;
+        }
+
+        .lut-name {
+            font-size: 12px;
+            color: #d4943a;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .card-header-right {
@@ -81,95 +86,34 @@
             gap: 10px;
         }
 
-        /* ---- Footer (风格选择) ---- */
-        .card-footer {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 6px;
-            border-top: 1px solid var(--divider);
-            flex-shrink: 0;
-        }
-
-        .card-footer-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .card-footer-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        #styleBtn {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            cursor: default;
-            transition: all 0.2s;
-            white-space: nowrap;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        #styleBtn.enabled {
-            color: var(--neon);
-            cursor: pointer;
-            text-shadow: 0 0 12px var(--neon-glow);
-        }
-
-        #styleBtn.enabled:hover {
-            color: #fff;
-            text-shadow: 0 0 16px var(--neon-glow);
-        }
-
-        #styleBtn.enabled:active {
-            transform: scale(0.97);
-        }
-
         .clear-btn {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-dim);
+            font-size: 12px;
+            color: #555;
             cursor: default;
-            padding: 8px 16px;
-            border: 1px solid var(--divider);
-            border-radius: 4px;
+            padding: 4px 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
             background: transparent;
-            transition: all 0.2s;
+            transition: color 0.2s, border-color 0.2s;
             white-space: nowrap;
         }
 
         .clear-btn.enabled {
-            color: var(--neon-pink);
-            border-color: oklch(65% 0.2 0 / 0.2);
+            color: #cc7777;
+            border-color: #553333;
             cursor: pointer;
-            text-shadow: 0 0 10px var(--neon-pink-glow);
         }
 
         .clear-btn.enabled:hover {
-            background: oklch(65% 0.2 0 / 0.08);
-            border-color: oklch(65% 0.2 0 / 0.5);
-            box-shadow: 0 0 20px oklch(65% 0.2 0 / 0.15);
+            color: #e05555;
+            border-color: #e05555;
         }
 
-        .clear-btn.enabled:active {
-            transform: scale(0.97);
-        }
-
-        /* ---- Body ---- */
         .card-body {
             position: relative;
             flex: 1;
             min-height: 0;
-            background: var(--body-bg);
+            background: #0d0d0d;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -178,12 +122,11 @@
         }
 
         .card-body:hover {
-            background: #0c0c14;
+            background: #111;
         }
 
         .card-body.drag-over {
-            background: oklch(78% 0.18 58 / 0.03);
-            box-shadow: inset 0 0 0 2px oklch(78% 0.18 58 / 0.3);
+            background: #1a1410;
         }
 
         .card-body canvas {
@@ -205,24 +148,20 @@
         }
 
         .upload-placeholder .icon {
-            font-size: 48px;
-            margin-bottom: 14px;
-            opacity: 0.35;
+            font-size: 42px;
+            margin-bottom: 10px;
+            opacity: 0.6;
         }
 
         .upload-placeholder .main-text {
-            font-size: 16px;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            color: var(--text-dim);
-            margin-bottom: 6px;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 4px;
         }
 
         .upload-placeholder .hint {
             font-size: 11px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: oklch(100% 0 0 / 0.15);
+            color: #555;
         }
 
         .card-body.has-image .upload-placeholder {
@@ -231,184 +170,55 @@
 
         .card-body input[type="file"] { display: none; }
 
-        /* ---- Loading Overlay ---- */
-        .loading-overlay {
-            display: none;
-            position: absolute;
-            inset: 0;
-            background: oklch(0% 0 0 / 0.72);
-            z-index: 10;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-        }
-
-        .loading-overlay.visible {
+        /* Bottom bar: device mode selector */
+        .card-footer {
+            padding: 8px 16px;
             display: flex;
-        }
-
-        .loading-spinner {
-            width: 36px;
-            height: 36px;
-            border: 2px solid oklch(100% 0 0 / 0.06);
-            border-top-color: var(--neon);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            box-shadow: 0 0 18px var(--neon-glow), 0 0 40px oklch(78% 0.18 58 / 0.12);
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            color: var(--neon);
-            text-shadow: 0 0 10px var(--neon-glow);
-            user-select: none;
-            -webkit-user-select: none;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            border-top: 1px solid #222;
+            flex-shrink: 0;
         }
 
         .mode-btn {
             font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: var(--text-dim);
+            color: #555;
             cursor: pointer;
-            padding: 9px 14px;
-            border: 1px solid var(--divider);
-            border-radius: 4px;
+            padding: 4px 14px;
+            border: 1px solid #333;
+            border-radius: 6px;
             background: transparent;
-            transition: all 0.2s;
+            transition: color 0.2s, border-color 0.2s, background 0.2s;
             white-space: nowrap;
             user-select: none;
             -webkit-user-select: none;
         }
 
         .mode-btn:hover {
-            color: var(--text-mid);
-            border-color: oklch(100% 0 0 / 0.15);
-            background: oklch(100% 0 0 / 0.03);
+            color: #aaa;
+            border-color: #555;
         }
 
         .mode-btn.selected {
-            color: var(--neon);
-            border-color: oklch(78% 0.18 58 / 0.4);
-            background: var(--neon-dim);
-            text-shadow: 0 0 10px var(--neon-glow);
-            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
+            color: #d4943a;
+            border-color: #d4943a;
+            background: rgba(212,148,58,0.1);
         }
 
         .mode-btn.disabled {
-            color: oklch(100% 0 0 / 0.08);
+            color: #333;
             cursor: default;
             pointer-events: none;
-            border-color: var(--divider);
+            border-color: #222;
         }
 
-        /* ---- ZINK dropdown ---- */
-        .mode-select {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            cursor: pointer;
-            padding: 9px 14px;
-            border: 1px solid var(--divider);
-            border-radius: 4px;
-            background: transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-appearance: none;
-            appearance: none;
-            outline: none;
-            font-family: inherit;
-            min-width: 120px;
-        }
-
-        .mode-select:hover {
-            color: var(--text-mid);
-            border-color: oklch(100% 0 0 / 0.15);
-            background: oklch(100% 0 0 / 0.03);
-        }
-
-        .mode-select:focus {
-            border-color: oklch(78% 0.18 58 / 0.4);
-            box-shadow: 0 0 12px oklch(78% 0.18 58 / 0.1);
-        }
-
-        .mode-select.selected {
-            color: var(--neon);
-            border-color: oklch(78% 0.18 58 / 0.4);
-            background: var(--neon-dim);
-            text-shadow: 0 0 10px var(--neon-glow);
-            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
-        }
-
-        .mode-select.disabled {
-            color: oklch(100% 0 0 / 0.08);
-            cursor: default;
-            pointer-events: none;
-            border-color: var(--divider);
-            opacity: 0.5;
-        }
-
-        .mode-select option {
-            background: #0a0a10;
-            color: #ccc;
-        }
-
-        /* ---- Save Button ---- */
-        .save-btn {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            cursor: default;
-            padding: 9px 14px;
-            border: 1px solid var(--divider);
-            border-radius: 4px;
-            background: transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .save-btn.enabled {
-            color: var(--neon);
-            border-color: oklch(78% 0.18 58 / 0.4);
-            cursor: pointer;
-            text-shadow: 0 0 10px var(--neon-glow);
-            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
-        }
-
-        .save-btn.enabled:hover {
-            background: var(--neon-dim);
-            border-color: oklch(78% 0.18 58 / 0.6);
-            box-shadow: 0 0 24px oklch(78% 0.18 58 / 0.15);
-        }
-
-        .save-btn.enabled:active {
-            transform: scale(0.97);
-        }
-
-        /* ---- LUT Panel ---- */
+        /* LUT selector panel */
         .lut-panel-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: oklch(0% 0 0 / 0.7);
+            background: rgba(0,0,0,0.7);
             z-index: 100;
             align-items: center;
             justify-content: center;
@@ -419,120 +229,92 @@
         }
 
         .lut-panel {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            border: 1px solid oklch(78% 0.18 58 / 0.12);
-            width: min(90vw, 720px);
-            max-height: 82vh;
+            background: #1a1a1a;
+            border-radius: 16px;
+            border: 1px solid #333;
+            width: 90vw;
+            max-width: 500px;
+            max-height: 80vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
         .lut-panel-header {
-            padding: 16px 20px;
+            padding: 16px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--divider);
-            flex-shrink: 0;
+            border-bottom: 1px solid #222;
         }
 
         .lut-panel-header h3 {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--neon);
-            text-shadow: 0 0 8px var(--neon-glow);
+            font-size: 16px;
+            color: #ccc;
         }
 
         .lut-panel-close {
-            font-size: 18px;
-            color: var(--text-dim);
+            font-size: 20px;
+            color: #666;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: all 0.2s;
+            padding: 0 4px;
+            transition: color 0.2s;
         }
 
         .lut-panel-close:hover {
-            color: var(--neon-pink);
-            text-shadow: 0 0 8px var(--neon-pink-glow);
+            color: #e05555;
         }
 
         .lut-panel-body {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 20px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .lut-panel-body::-webkit-scrollbar {
-            display: none;
+            padding: 12px 0;
         }
 
         .lut-category {
-            margin-bottom: 14px;
+            padding: 0 18px;
+            margin-bottom: 4px;
         }
 
         .lut-category-title {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: oklch(78% 0.18 58 / 0.45);
-            padding: 0 0 8px;
-            text-shadow: 0 0 6px oklch(78% 0.18 58 / 0.15);
-        }
-
-        .lut-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
+            letter-spacing: 1px;
+            color: #555;
+            padding: 8px 0 6px;
         }
 
         .lut-item {
-            padding: 6px 14px;
+            padding: 14px 18px;
             cursor: pointer;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            color: var(--text-mid);
-            transition: all 0.15s;
-            display: inline-flex;
+            font-size: 15px;
+            color: #aaa;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
             align-items: center;
-            gap: 5px;
-            border-radius: 4px;
+            justify-content: space-between;
+            min-height: 48px;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            border: 1px solid var(--divider);
-            white-space: nowrap;
         }
 
         .lut-item:hover {
-            background: oklch(100% 0 0 / 0.04);
-            color: var(--text-bright);
-            border-color: oklch(100% 0 0 / 0.12);
+            background: #222;
+            color: #fff;
         }
 
         .lut-item.selected {
-            color: var(--neon);
-            background: var(--neon-dim);
-            border-color: oklch(78% 0.18 58 / 0.3);
-            text-shadow: 0 0 6px var(--neon-glow);
+            color: #d4943a;
+            background: rgba(212,148,58,0.08);
         }
 
         .lut-item .check {
-            color: var(--neon);
-            font-size: 10px;
-            text-shadow: 0 0 6px var(--neon-glow);
+            color: #d4943a;
+            font-size: 14px;
         }
 
         .lut-item:not(.selected) .check {
-            display: none;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -543,16 +325,11 @@
     <div class="image-card">
         <div class="card-header">
             <div class="card-header-left">
-                <span class="mode-btn selected" data-mode="original">无设备</span>
-                <select class="mode-select disabled" id="zinkSelect">
-                    <option value="zink">ZINK v1.1</option>
-                    <option value="zink2">ZINK v1.2</option>
-                    <option value="zink3">ZINK v1.3</option>
-                </select>
-                <span class="mode-btn disabled" data-mode="led">LED</span>
+                <h2 id="styleBtn">选择风格</h2>
+                <span class="lut-name" id="lutName"></span>
             </div>
             <div class="card-header-right">
-                <span class="save-btn" id="saveBtn">保存</span>
+                <span class="clear-btn" id="clearBtn">清除</span>
             </div>
         </div>
         <div class="card-body" id="cardBody">
@@ -562,20 +339,13 @@
                 <div class="main-text">点击此处选择本地图片</div>
                 <div class="hint">支持 JPG / PNG / WebP</div>
             </div>
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">加载风格中</div>
-            </div>
             <input type="file" id="imageInput" accept="image/*">
             <input type="file" id="lutInput" accept=".cube,text/plain" style="display:none">
         </div>
         <div class="card-footer" id="cardFooter">
-            <div class="card-footer-left">
-                <span id="styleBtn">选择风格</span>
-            </div>
-            <div class="card-footer-right">
-                <span class="clear-btn" id="clearBtn">清除风格</span>
-            </div>
+            <span class="mode-btn selected" data-mode="original">无设备</span>
+            <span class="mode-btn disabled" data-mode="zink">ZINK</span>
+            <span class="mode-btn disabled" data-mode="led">LED</span>
         </div>
     </div>
 
@@ -637,47 +407,12 @@
     // Initialize
     loadLutIndex();
 
-    // ---- Display name mapping for "for cam" and "opt for zink" ----
-    const DISPLAY_MAP = {
-        'for cam': {
-            '1.portrait-fujiNC2 48': 'fujiNC2 48',
-            '2.Scenery-fujiNN': 'fujiNN',
-            '3.portrait-Florida2': 'Florida2',
-            '4.Food-fugumeishi': '复古美食',
-            '5.Food-xinxian': '新鲜',
-            '6.portrait-deepblue': 'deepblue',
-            '7.night-yejing11': '夜景11',
-        },
-        'opt for zink': {
-            '08.retroportrait-doublelut': 'retroportrait-doublelut',
-            '09.portrait-baoman': 'portrait-baoman',
-            '10.Camera-Olympus-u2': 'camera-Olympus-u2',
-            '11.Food-ziwei': 'food-ziwei',
-            '12.Food-jianghuang': 'food-jianghuang',
-            '13.Food-danju': 'food-danju',
-            '14.Food-TFTzi 75%': 'food-TFTzi 75%',
-            '15retro-warmbrown': 'retro-warmbrown',
-            '16.retro-brown': 'retro-brown',
-            '17.Scenery8-xianyan': 'scenery-xianyan',
-            '18.Scenery-qinglansediao': 'scenery-qinglansediao',
-        },
-    };
-
-    function formatLutName(category, filename) {
-        const base = filename.replace(/\.(cube|CUBE)$/, '');
-        if (DISPLAY_MAP[category] && DISPLAY_MAP[category][base]) {
-            return DISPLAY_MAP[category][base];
-        }
-        return base;
-    }
-
     const cardBody      = document.getElementById('cardBody');
     const styleBtn      = document.getElementById('styleBtn');
+    const lutNameEl     = document.getElementById('lutName');
     const clearBtn      = document.getElementById('clearBtn');
-    const saveBtn       = document.getElementById('saveBtn');
     const canvasOut     = document.getElementById('canvasOut');
     const placeholder   = document.getElementById('placeholder');
-    const loadingOverlay = document.getElementById('loadingOverlay');
     const imageInput    = document.getElementById('imageInput');
     const lutInput      = document.getElementById('lutInput');
     const lutPanelOverlay = document.getElementById('lutPanelOverlay');
@@ -690,8 +425,8 @@
     let deviceLutData = null;     // device LUT (zink/led)
     let hasImage = false;
     let selectedLutKey = null;
-    let deviceMode = 'original';   // 'original' | 'zink' | 'zink2' | 'zink3' | 'led'
-    let deviceLoaded = { zink: false, zink2: false, zink3: false, led: false };
+    let deviceMode = 'original';   // 'original' | 'zink' | 'led'
+    let deviceLoaded = { zink: false, led: false };
 
     // ---- Parse .cube file ----
     function parseCubeFile(text) {
@@ -807,7 +542,7 @@
     function buildLutPanel() {
         lutPanelBody.innerHTML = '';
         if (!lutIndex) {
-            lutPanelBody.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">加载 LUT 列表中...</div>';
+            lutPanelBody.innerHTML = '<div class="lut-item" style="justify-content:center;color:#666;">加载 LUT 列表中...</div>';
             return;
         }
         const categories = (categoryOrder || Object.keys(lutIndex)).map(key => {
@@ -819,12 +554,9 @@
             catDiv.className = 'lut-category';
             catDiv.innerHTML = '<div class="lut-category-title">' + cat.label + '</div>';
             
-            const tagsDiv = document.createElement('div');
-            tagsDiv.className = 'lut-tags';
-            
             const files = lutIndex[cat.key] || [];
             for (const fname of files) {
-                const display = formatLutName(cat.key, fname);
+                const display = fname.replace(/\.(cube|CUBE)$/, '');
                 const item = document.createElement('div');
                 item.className = 'lut-item';
                 if (selectedLutKey === cat.key + '/' + fname) {
@@ -834,30 +566,25 @@
                 item.addEventListener('click', () => {
                     selectLut(cat.key, fname);
                 });
-                tagsDiv.appendChild(item);
+                catDiv.appendChild(item);
             }
-            catDiv.appendChild(tagsDiv);
             lutPanelBody.appendChild(catDiv);
         }
     }
 
     async function selectLut(category, filename) {
-        // Close panel immediately and show loading overlay
-        lutPanelOverlay.classList.remove('visible');
-        const display = formatLutName(category, filename);
-        styleBtn.textContent = category + ' - ' + display;
-        loadingOverlay.classList.add('visible');
-
         try {
+            lutNameEl.textContent = '加载中...';
             const text = await loadLutContent(category, filename);
             lutData = parseCubeFile(text);
             selectedLutKey = category + '/' + filename;
-            loadingOverlay.classList.remove('visible');
+            const display = filename.replace(/\.(cube|CUBE)$/, '');
+            lutNameEl.textContent = display;
+            lutPanelOverlay.classList.remove('visible');
             render();
         } catch (err) {
-            loadingOverlay.classList.remove('visible');
             alert('LUT 加载失败: ' + err.message);
-            styleBtn.textContent = '选择风格';
+            lutNameEl.textContent = '';
         }
     }
 
@@ -879,15 +606,14 @@
 
     // ---- Device LUT loading ----
     async function loadDeviceLut(mode) {
-        if (mode === 'original' || !mode) return;
-        if (deviceLoaded[mode]) return;
-        // Map mode to filename
-        const fileMap = { zink: 'zink.cube', zink2: 'zink2.cube', zink3: 'zink3.cube', led: 'led.cube' };
-        const filename = fileMap[mode] || (mode + '.cube');
+        if (mode === 'original') return;
+        if (deviceLoaded[mode]) return; // already loaded
         try {
-            const text = await fetchLutFile('device/' + filename);
+            const text = await fetchLutFile('device/' + mode + '.cube');
             const parsed = parseCubeFile(text);
-            window['_lut_' + mode] = parsed;
+            // Cache parsed data
+            if (mode === 'zink') window._zinkLut = parsed;
+            if (mode === 'led') window._ledLut = parsed;
             deviceLoaded[mode] = true;
         } catch (err) {
             console.error('Failed to load device LUT (' + mode + '):', err);
@@ -896,19 +622,20 @@
     }
 
     function getDeviceLut(mode) {
-        return window['_lut_' + mode] || null;
+        if (mode === 'zink') return window._zinkLut || null;
+        if (mode === 'led') return window._ledLut || null;
+        return null;
     }
 
-    // ---- Device mode buttons (original + LED) ----
+    // ---- Device mode buttons ----
     const modeBtns = document.querySelectorAll('.mode-btn');
-    const zinkSelect = document.getElementById('zinkSelect');
 
     function setDeviceMode(mode) {
         if (deviceMode === mode) return;
         deviceMode = mode;
         deviceLutData = getDeviceLut(mode);
 
-        // Update original/LED button states
+        // Update button states
         modeBtns.forEach(b => {
             if (b.dataset.mode === mode) {
                 b.classList.add('selected');
@@ -917,25 +644,16 @@
             }
         });
 
-        // Update ZINK dropdown
-        if (mode && mode.startsWith('zink')) {
-            zinkSelect.value = mode;
-            zinkSelect.classList.add('selected');
-        } else {
-            zinkSelect.value = '';
-            zinkSelect.classList.remove('selected');
-        }
-
         render();
     }
 
-    // Original + LED button clicks
     modeBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const mode = btn.dataset.mode;
             if (btn.classList.contains('disabled')) return;
 
+            // Load device LUT if needed
             if (mode !== 'original' && !deviceLoaded[mode]) {
                 btn.textContent = '加载中...';
                 await loadDeviceLut(mode);
@@ -946,18 +664,6 @@
         });
     });
 
-    // ZINK dropdown change
-    zinkSelect.addEventListener('change', async function(e) {
-        e.stopPropagation();
-        const mode = this.value;
-
-        if (!deviceLoaded[mode]) {
-            await loadDeviceLut(mode);
-        }
-
-        setDeviceMode(mode);
-    });
-
     // Enable device buttons when image is loaded
     function enableDeviceButtons() {
         modeBtns.forEach(b => {
@@ -965,7 +671,6 @@
                 b.classList.remove('disabled');
             }
         });
-        zinkSelect.classList.remove('disabled');
     }
 
     function disableDeviceButtons() {
@@ -974,11 +679,10 @@
                 b.classList.add('disabled');
             }
         });
-        zinkSelect.classList.add('disabled');
-        zinkSelect.value = '';
-        zinkSelect.classList.remove('selected');
         setDeviceMode('original');
-        deviceLoaded = { zink: false, zink2: false, zink3: false, led: false };
+        deviceLoaded = { zink: false, led: false };
+        window._zinkLut = null;
+        window._ledLut = null;
     }
 
     // ---- Image upload ----
@@ -996,10 +700,9 @@
                 cardBody.classList.add('has-image');
                 styleBtn.classList.add('enabled');
                 clearBtn.classList.add('enabled');
-                saveBtn.classList.add('enabled');
                 lutData = null;
                 selectedLutKey = null;
-                styleBtn.textContent = '选择风格';
+                lutNameEl.textContent = '';
                 canvasOut.classList.add('visible');
                 enableDeviceButtons();
                 render();
@@ -1017,7 +720,7 @@
             try {
                 lutData = parseCubeFile(e.target.result);
                 selectedLutKey = null;
-                styleBtn.textContent = file.name;
+                lutNameEl.textContent = file.name;
                 render();
             } catch (err) {
                 alert('无法解析 LUT 文件: ' + err.message);
@@ -1030,7 +733,7 @@
     function clearFilter() {
         lutData = null;
         selectedLutKey = null;
-        styleBtn.textContent = '选择风格';
+        lutNameEl.textContent = '';
         render();
     }
 
@@ -1047,50 +750,14 @@
         ctx.clearRect(0, 0, canvasOut.width, canvasOut.height);
 
         styleBtn.classList.remove('enabled');
-        styleBtn.textContent = '选择风格';
         clearBtn.classList.remove('enabled');
-        saveBtn.classList.remove('enabled');
+        lutNameEl.textContent = '';
 
         disableDeviceButtons();
 
         imageInput.value = '';
         lutInput.value = '';
     }
-
-    // ---- Save image ----
-    function getSaveFileName() {
-        const parts = [];
-        // 设备状态部分
-        if (deviceMode === 'original') {
-            parts.push('无设备');
-        } else {
-            parts.push(deviceMode.toUpperCase());
-        }
-        // LUT 风格部分
-        if (selectedLutKey) {
-            const slashIdx = selectedLutKey.lastIndexOf('/');
-            const category = selectedLutKey.substring(0, slashIdx);
-            const filename = selectedLutKey.substring(slashIdx + 1).replace(/\.(cube|CUBE)$/, '');
-            parts.push(category + '-' + filename);
-        } else {
-            parts.push('无风格');
-        }
-        return parts.join('-') + '.png';
-    }
-
-    function saveImage() {
-        if (!hasImage) return;
-        const link = document.createElement('a');
-        link.download = getSaveFileName();
-        link.href = canvasOut.toDataURL('image/png');
-        link.click();
-    }
-
-    saveBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!hasImage) return;
-        saveImage();
-    });
 
     // ---- Events ----
     cardBody.addEventListener('click', (e) => {
@@ -1140,31 +807,6 @@
             handleImageFile(e.dataTransfer.files[0]);
         }
     });
-
-    // ---- Service Worker registration & background preload ----
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then((reg) => {
-            console.log('[SW] Registered:', reg.scope);
-
-            // Listen for cache-status messages from SW
-            navigator.serviceWorker.addEventListener('message', (event) => {
-                if (event.data.type === 'cache-status') {
-                    console.log('[SW] Cache ready: ' + event.data.cached + '/' + event.data.total + ' files');
-                }
-            });
-
-            // After SW is active, trigger background preload of all cube files
-            // This ensures files not yet cached get fetched and stored
-            navigator.serviceWorker.ready.then(() => {
-                // Ask SW for current cache status
-                if (navigator.serviceWorker.controller) {
-                    navigator.serviceWorker.controller.postMessage('cache-status');
-                }
-            });
-        }).catch((err) => {
-            console.warn('[SW] Registration failed:', err);
-        });
-    }
 </script>
 
 </body>
