@@ -312,60 +312,6 @@
             border-color: var(--divider);
         }
 
-        /* ---- ZINK dropdown ---- */
-        .mode-select {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            cursor: pointer;
-            padding: 9px 14px;
-            border: 1px solid var(--divider);
-            border-radius: 4px;
-            background: transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-appearance: none;
-            appearance: none;
-            outline: none;
-            font-family: inherit;
-            min-width: 120px;
-        }
-
-        .mode-select:hover {
-            color: var(--text-mid);
-            border-color: oklch(100% 0 0 / 0.15);
-            background: oklch(100% 0 0 / 0.03);
-        }
-
-        .mode-select:focus {
-            border-color: oklch(78% 0.18 58 / 0.4);
-            box-shadow: 0 0 12px oklch(78% 0.18 58 / 0.1);
-        }
-
-        .mode-select.selected {
-            color: var(--neon);
-            border-color: oklch(78% 0.18 58 / 0.4);
-            background: var(--neon-dim);
-            text-shadow: 0 0 10px var(--neon-glow);
-            box-shadow: 0 0 16px oklch(78% 0.18 58 / 0.08);
-        }
-
-        .mode-select.disabled {
-            color: oklch(100% 0 0 / 0.08);
-            cursor: default;
-            pointer-events: none;
-            border-color: var(--divider);
-            opacity: 0.5;
-        }
-
-        .mode-select option {
-            background: #0a0a10;
-            color: #ccc;
-        }
 
         /* ---- Save Button ---- */
         .save-btn {
@@ -544,12 +490,10 @@
         <div class="card-header">
             <div class="card-header-left">
                 <span class="mode-btn selected" data-mode="original">无设备</span>
-                <select class="mode-select disabled" id="zinkSelect">
-                    <option value="zink">ZINK v1.1</option>
-                    <option value="zink2">ZINK v1.2</option>
-                    <option value="zink3">ZINK v1.3</option>
-                </select>
                 <span class="mode-btn disabled" data-mode="led">LED</span>
+                <span class="mode-btn disabled" data-mode="zink">ZINK v1.1</span>
+                <span class="mode-btn disabled" data-mode="zink2">ZINK v1.2</span>
+                <span class="mode-btn disabled" data-mode="zink3">ZINK v1.3</span>
             </div>
             <div class="card-header-right">
                 <span class="save-btn" id="saveBtn">保存</span>
@@ -899,16 +843,15 @@
         return window['_lut_' + mode] || null;
     }
 
-    // ---- Device mode buttons (original + LED) ----
+    // ---- Device mode buttons (all unified) ----
     const modeBtns = document.querySelectorAll('.mode-btn');
-    const zinkSelect = document.getElementById('zinkSelect');
 
     function setDeviceMode(mode) {
         if (deviceMode === mode) return;
         deviceMode = mode;
         deviceLutData = getDeviceLut(mode);
 
-        // Update original/LED button states
+        // Update all mode button states
         modeBtns.forEach(b => {
             if (b.dataset.mode === mode) {
                 b.classList.add('selected');
@@ -917,19 +860,10 @@
             }
         });
 
-        // Update ZINK dropdown
-        if (mode && mode.startsWith('zink')) {
-            zinkSelect.value = mode;
-            zinkSelect.classList.add('selected');
-        } else {
-            zinkSelect.value = '';
-            zinkSelect.classList.remove('selected');
-        }
-
         render();
     }
 
-    // Original + LED button clicks
+    // All mode button clicks (original / LED / ZINK v1.1~v1.3)
     modeBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -939,33 +873,13 @@
             if (mode !== 'original' && !deviceLoaded[mode]) {
                 btn.textContent = '加载中...';
                 await loadDeviceLut(mode);
-                btn.textContent = mode.toUpperCase();
+                // Restore original text
+                const labelMap = { led: 'LED', zink: 'ZINK v1.1', zink2: 'ZINK v1.2', zink3: 'ZINK v1.3' };
+                btn.textContent = labelMap[mode] || mode.toUpperCase();
             }
 
             setDeviceMode(mode);
         });
-    });
-
-    // ZINK dropdown — use both change and click for robust selection
-    let zinkPendingMode = null;
-
-    zinkSelect.addEventListener('change', async function(e) {
-        e.stopPropagation();
-        zinkPendingMode = this.value;
-    });
-
-    zinkSelect.addEventListener('click', async function(e) {
-        e.stopPropagation();
-        // Wait a tick for change to fire, then apply
-        await new Promise(r => setTimeout(r, 0));
-        const mode = zinkPendingMode || this.value;
-        if (!mode) return;
-
-        if (!deviceLoaded[mode]) {
-            await loadDeviceLut(mode);
-        }
-
-        setDeviceMode(mode);
     });
 
     // Enable device buttons when image is loaded
@@ -975,7 +889,6 @@
                 b.classList.remove('disabled');
             }
         });
-        zinkSelect.classList.remove('disabled');
     }
 
     function disableDeviceButtons() {
@@ -984,9 +897,6 @@
                 b.classList.add('disabled');
             }
         });
-        zinkSelect.classList.add('disabled');
-        zinkSelect.value = '';
-        zinkSelect.classList.remove('selected');
         setDeviceMode('original');
         deviceLoaded = { zink: false, zink2: false, zink3: false, led: false };
     }
